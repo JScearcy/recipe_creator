@@ -1,0 +1,17 @@
+doctype html
+html(ng-app='recipeCreator')
+  head
+    title RecipeMaker
+    link(rel='stylesheet', href='/vendors/angularcss/angular-material.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.min.css')
+    base(href='/')
+  body
+    block content
+    
+    //- script(data-main="javascripts/app.min.js" src="javascripts/require.min.js")
+    script(src='/vendors/angularjs/angular.min.js', type='text/javascript')
+    script(src='/javascripts/app.min.js', type='text/javascript')
+    script(src='/vendors/angularjs/angular-route.min.js' type='text/javascript')
+    script(src='/vendors/angularjs/angular-animate.min.js', type='text/javascript')
+    script(src='/vendors/angularjs/angular-aria.min.js', type='text/javascript')
+    script(src='/vendors/angularjs/angular-material.min.js', type='text/javascript')

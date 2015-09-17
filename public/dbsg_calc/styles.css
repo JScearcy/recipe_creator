@@ -1,0 +1,29 @@
+.hidden {
+  display: none;
+  border: 0px none;
+}
+form {
+  text-align: center;
+  display: block;
+  margin: 0 0 15px 0;
+}
+#ppgdata {
+  border: 2px solid #000;
+}
+button {
+  display: block;
+  margin: 15px auto;
+}
+h1 {
+  text-align: center;
+}
+ul {
+  list-style-type: none;
+}
+li {
+  display: inline-block;
+  text-align: center;
+  border: 2px solid #000;
+  margin: 10px 10px;
+  padding: 3px 3px;
+}

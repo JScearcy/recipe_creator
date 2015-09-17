@@ -1,0 +1,32 @@
+{
+  "name": "Prime_Personal_Project",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "angular": "^1.4.5",
+    "angular-animate": "^1.4.5",
+    "angular-aria": "^1.4.5",
+    "angular-material": "^0.11.0",
+    "angular-route": "^1.4.5",
+    "body-parser": "~1.13.2",
+    "cookie-parser": "~1.3.5",
+    "debug": "~2.2.0",
+    "express": "~4.13.1",
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-jade": "^1.1.0",
+    "gulp-minify-css": "^1.2.1",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-uglify": "^1.4.1",
+    "gulp-util": "^3.0.6",
+    "jade": "~1.11.0",
+    "mongoose": "^4.1.6",
+    "morgan": "~1.6.1",
+    "path": "^0.12.7",
+    "serve-favicon": "~2.3.0",
+    "sqlite3": "^3.1.0"
+  }
+}

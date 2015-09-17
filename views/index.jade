@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  md-toolbar(class="md-menu-toolbar")
+    div(layout='row')
+      a(class="md-toolbar-tools" href="/") Home
+      md-menu-bar
+        md-menu 
+          a(class="md-toolbar-tools" href="" ng-click="$mdOpenMenu()") Calculators
+          md-menu-content
+            md-menu-item
+              a(href='/dbsg_calc') Calc SG from DBFG
+  div(ng-view)
+    
