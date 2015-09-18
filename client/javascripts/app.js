@@ -51,13 +51,14 @@
         added: [],
         ibu: function() {
           if($scope.recipe.hops.added.length > 0) {
-            var aau = 0;
+            var ibu = 0;
+            var util = 26.8;
             $scope.recipe.hops.added.forEach(function(hop) {
-              aau += hop.hopWt * hop.Alpha_Acid;
+              ibu += hop.hopWt * hop.Alpha_Acid * util / ($scope.recipe.volume * 1.34);
             });
-            
+            return Math.round(ibu * 100) / 100;
           }
-          return "IBU's coming soon"
+          return 0;
         }
       },
       og: function() {
