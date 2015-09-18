@@ -3,12 +3,13 @@ extends layout
 block content
   md-toolbar(class="md-menu-toolbar")
     div(layout='row')
-      a(class="md-toolbar-tools" href="/") Home
-      md-menu-bar
-        md-menu 
-          a(class="md-toolbar-tools" href="" ng-click="$mdOpenMenu()") Calculators
-          md-menu-content
-            md-menu-item
-              a(href='/dbsg_calc') Calc SG from DBFG
+      a(class="md-toolbar-tools md-button md-default-theme" href="/") Home
+      a(class="md-toolbar-tools md-button md-default-theme" href="mailto:jacobscearcy@gmail.com") Contact
+      //- md-menu-bar
+      md-menu 
+        a(class="md-toolbar-tools md-button md-default-theme" href="" ng-click="$mdOpenMenu()") Calculators
+        md-menu-content
+          md-menu-item
+            a(class="md-button md-default-theme" href='/dbsg_calc') Calc SG from DBFG
   div(ng-view)
     

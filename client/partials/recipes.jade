@@ -1,89 +1,115 @@
+ul(class="recipeCalcs")
+  li(class="calcList") OG: {{recipe.og()}}
+  li(class="calcList") FG: {{recipe.fg()}}
+  li(class="calcList") ABV: {{recipe.abv() + '%'}}
+  li(class="calcList") IBUs: {{recipe.hops.ibu()}}
+  li(class="calcList") Color(SRM Morey): {{recipe.srm()}}
+  li(class="calcList") Diastatic Power: {{recipe.dp()}}
+  
 md-tabs(class="md-raised md-primary" md-dynamic-height md-border-bottom)
+  md-tab(label="Recipe Config")
+    md-content(layoutpadding layout="column" layout-sm="column")
+      md-input-container(class="configInput")
+        label(for="volume") Volume(gal)
+        input(type="number" ng-model="recipe.volume" name="volume" id="volume")
+      md-input-container(class="configInput")
+        label(for="efficiency") Custom Efficiency
+        input(type="number" ng-model="recipe.efficiency" name="efficiency" id="efficiency")
+      md-input-container(class="configInput")
+        label(for="attenuation") Custom Attenuation
+        input(type="number" ng-model="recipe.attenuation" name="attenuation" id="attenuation")
   md-tab(label="Grains")
     .box.grains
+      md-button(ng-click="recipe.grains.efficiencyPPG()")
       md-content(layout-padding layout="row" layout-sm="column")
-        md-input-container
+        md-input-container(class="ingredient")
           label(for='grains') Grains
           md-select(name='grains' id='grains' ng-model='grain' required)
             md-option(ng-repeat='grain in grains | orderBy: "name"' ng-value="{{grain}}") {{grain.name}}
         md-input-container
           label(for='grainsWt') Weight(lbs.)
-          input(ng-model="grain.grainWt" name="grainsWt" id="grainsWt")
-        md-button(class='md-raised md-primary' ng-click='addGrains()' aria-label='Get Grains' ng-disabled='!grain || !grain.grainWt') Add Grains
-        h2 {{grain.name}}
-        ul
-          li {{grain.flavor}}
-          li {{grain.PPG}}
-      table(ng-show="addedGrains.Grains.length > 0" class="grainTable")
+          input(type="number" ng-model="grain.grainWt" name="grainsWt" id="grainsWt")
+        md-button(class='md-raised md-primary' ng-click='addIngredient("grains", "grain")' aria-label='Add Grains' ng-disabled='!grain || !grain.grainWt') Add Grains
+      h2 {{grain.name}}
+      ul(class="grainList" ng-show="grain.name")
+        li Flavor: {{grain.flavor}}
+        li PPG: {{grain.PPG}}
+        li Lovi: {{grain.lovi}}
+      table(ng-show="recipe.grains.added.length > 0" class="ingredientTable")
         tr
           th Name
           th Flavor
           th Amount(lbs)
           th PPG
-          th 
-        tr(ng-show="addedGrain" ng-repeat="addedGrain in addedGrains.Grains track by $index")
-          th {{addedGrain.name}}
-          th {{addedGrain.flavor}}
+          th Lovi
+          th
+        tr(ng-show="recipe.grains.added" ng-repeat="recipegrain in recipe.grains.added track by $index")
+          th {{recipegrain.name}}
+          th {{recipegrain.flavor}}
           th
             md-input-container
               label(for="grainWtChng")
-              input(class="grainWtChngIn" name="grainWtChng" id="grainWtChng" ng-model='addedGrain.grainWt' ng-value="{{addedGrain.grainWt}}" aria-label="weight")
-          th {{addedGrain.PPG}}
+              input(type="number" class="grainWtChngIn" name="grainWtChng" id="grainWtChng" ng-model='recipegrain.grainWt' ng-value="{{addedGrain.grainWt}}" aria-label="weight")
+          th {{recipegrain.PPG}}
+          th {{recipegrain.lovi}}
           th 
-            md-button(class="md-raised md-warn" ng-click="deleteItem($index, 'grain')") Remove
+            md-button(class="md-raised md-warn" ng-click="deleteItem($index, 'grains')") Remove
         tr
           th Totals
           th
-          th {{addedGrains.totalWeight()}} 
-          th
+          th {{recipe.grains.totalWeight()}} 
+          th {{1 + recipe.grains.totalPPG()}}
+          th 
           th
   md-tab(label="Hops")   
     .box.hops
       md-content(layout-padding layout="row" layout-sm="column")
-        md-input-container
+        md-input-container(class="ingredient")
           label(for='hops') Hops
-          md-select(name'hops' id='hops' ng-model='hop' required)
+          md-select(name='hops' id='hops' ng-model='hop' required)
             md-option(ng-repeat='hop in hops' ng-value='{{hop}}') {{hop.Name}}  
         md-input-container
           label(for='hopsWt') Weight(oz)
           input(ng-model="hop.hopWt" name="hopsWt" id="hopsWt")
-        md-button(class='md-raised md-primary' ng-click='addHops()' aria-label='Get Grains' ng-disabled="!hop || !hop.hopWt") Add Hops
-      md-grid-list(
-        md-cols-sm="1" md-cols-md="2" md-cols-gt-md="6"
-        md-row-height-gt-md="1:1" md-row-height="4:3"
-        md-gutter="8px" md-gutter-gt-sm="4px")
-        md-grid-tile(md-rowspan='1' md-colspan='2' md-colspan-sm="1" ng-show='addedHops' ng-repeat="addedHop in addedHops track by $index")
-          h2(ng-show="addedHop.Name") {{addedHop.Name}}
-          ul
-            li(ng-show="addedHop.Alpha_Acid") Alpha Acid: {{addedHop.Alpha_Acid + '%'}}
-            li(ng-show="addedHop.Beta_Acid") Beta Acid: {{addedHop.Beta_Acid + '%'}}
-            li(ng-show="addedHop.Origin") Origin: {{addedHop.Origin}}
-            li(ng-show='addedHop.hopWt') {{addedHop.hopWt + ' Ounces'}}
-      md-button(class="md-raised md-warn" ng-show="addedHop" ng-click="deleteItem($index, 'hop')") Remove
-      table(ng-show="addedHops.length > 0" class="hopTable")
+        md-input-container
+          label(for='hopType') type
+          md-select(ng-model='hop.hopType' name='hopType' id='hopType' required)
+            md-option(value="boil") Boil
+            md-option(value="whirlpool") Whirlpool
+            md-option(value="dryhop") Dry Hop
+        md-button(class='md-raised md-primary' ng-click='addIngredient("hops", "hop")' aria-label='Add Hops' ng-disabled="!hop || !hop.hopWt") Add Hops
+        h2 {{hop.Name}}
+        ul(class="hopList")
+          li(ng-show="hop") AA%: {{hop.Alpha_Acid}}
+          li(ng-show="hop") Notes: {{hop.Notes}}
+          li(ng-show="hop") Origin: {{hop.Origin}}
+          //- li {{grain.PPG}}  
+      table(ng-show="recipe.hops.added.length > 0" class="ingredientTable")
         tr
           th Name
           th Alpha Acid
           th Beta Acid
           th Weight(oz)
           th IBUs
+          th Utilization
           th
-        tr(ng-repeat="addedHop in addedHops track by $index")
-          th {{addedHop.Name}}
-          th {{addedHop.Alpha_Acid}}
-          th {{addedHop.Beta_Acid}}
-          th {{addedHop.hopWt + ' Ounces'}}
-          th IBUs HERE
+        tr(ng-repeat="hop in recipe.hops.added track by $index")
+          th {{hop.Name}}
+          th {{hop.Alpha_Acid}}
+          th {{hop.Beta_Acid}}
+          th {{hop.hopWt + ' Ounces'}}
+          th {{hop.ibu}}
+          th {{hop.hopType}}
           th
-            md-button(class="md-raised md-warn" ng-show="addedHop" ng-click="deleteItem($index, 'hop')") Remove 
+            md-button(class="md-raised md-warn" ng-show="hop" ng-click="deleteItem($index, 'hops')") Remove 
     
       
   md-tab(label="Yeast")    
     .box.yeasts
       md-content(layout-padding layout="row" layout-sm="column")
-        md-input-container
+        md-input-container(class="ingredient")
           label(for='yeast') Yeast
-          md-select(name'yeast' id='yeast' ng-model='yeast' required)
+          md-select(name='yeast' id='yeast' ng-model='yeast' required)
             md-option(ng-repeat='yeast in yeasts' ng-value='{{yeast}}') {{yeast.ID + ' ' + yeast.Name}}
       .yeast(ng-show='yeast')
         h2(ng-show="yeast.ID") {{yeast.ID + ' ' + yeast.Name}}
@@ -91,3 +117,10 @@ md-tabs(class="md-raised md-primary" md-dynamic-height md-border-bottom)
         p(ng-show="yeast.Flocculation") Flocculation: {{yeast.Flocculation}}
         p(ng-show="yeast.Attenuation") Avg Attenuation: {{yeast.Attenuation[1] + yeast.Attenuation[2] + '-' + yeast.Attenuation[4] + yeast.Attenuation[5] + "%"}} 
         p(ng-show="yeast.Temp_Range") Preferred Temp Range: {{yeast.Temp_Range[1] + yeast.Temp_Range[2] + '-' + yeast.Temp_Range[4] + yeast.Temp_Range[5] + " degrees F"}}
+  
+  md-tab(label="Notes")
+    .notes
+      md-content
+        md-input-container
+          label(for="notes")
+          textarea(rows="5" cols="8" name="notes" id="notes" ng-model="notes")

@@ -6,7 +6,7 @@ body {
 a {
   color: #00B7FF;
 }
-.grainTable {
+.ingredientTable {
   border: 2px solid black;
   text-align: center;
   width: 80%;
@@ -18,4 +18,20 @@ th {
 .grainWtChngIn {
   width: 40px;
   text-align: center;
+}
+.hopList {
+  list-style-type: none;
+}
+.grainList {
+  list-style-type: none;
+}
+.ingredient {
+  width: 35%;
+}
+.configInput {
+  width: 50%;
+}
+.calcList {
+  display: inline;
+  margin: 10px 20px;
 }
