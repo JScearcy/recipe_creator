@@ -1,15 +1,19 @@
 extends layout
 
 block content
-  md-toolbar(class="md-menu-toolbar")
-    div(layout='row')
-      a(class="md-toolbar-tools md-button md-default-theme" href="/") Home
-      a(class="md-toolbar-tools md-button md-default-theme" href="mailto:jacobscearcy@gmail.com") Contact
-      //- md-menu-bar
-      md-menu 
-        a(class="md-toolbar-tools md-button md-default-theme" href="" ng-click="$mdOpenMenu()") Calculators
-        md-menu-content
-          md-menu-item
-            a(class="md-button md-default-theme" href='/dbsg_calc') Calc SG from DBFG
+  .headingDiv(class="md-primary")
+    header(class="headerImg")
+    md-toolbar(layout="row")
+      md-menu
+        a(class="md-toolbar-tools md-button md-default-theme" href="/") Home
+      md-menu
+        md-menu-bar
+          md-menu 
+            a(class="md-toolbar-tools md-button md-default-theme" href="" ng-mouseenter="$mdOpenMenu()" aria-label="Open calculators menu") Calculate
+            md-menu-content(class="md-default-theme")
+              md-menu-item
+                a(class="md-button md-default-theme" href='/dbsg_calc') Calc SG from DBFG
+      md-menu
+        a(class="md-toolbar-tools md-button md-default-theme" href="mailto:jacobscearcy@gmail.com") Contact
   div(ng-view)
     

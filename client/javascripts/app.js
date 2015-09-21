@@ -1,6 +1,9 @@
   var app = angular.module('recipeCreator', ['ngMaterial', 'ngRoute']);
-  app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider){
+  app.config(['$routeProvider', '$locationProvider', '$mdThemingProvider', function($routeProvider, $locationProvider, $mdThemingProvider){
     $locationProvider.html5Mode(true);
+    $mdThemingProvider.theme('default')
+      .primaryPalette('amber')
+      .accentPalette('yellow');
 
     $routeProvider.when('/', {
       templateUrl: '/views/recipes.html',
@@ -15,13 +18,14 @@
       return (1000 * (1 + (dbfg / 100) * 0.04621)) / 1000
     }
   });
+
   app.controller('recipeMake', ['$scope', '$http', function($scope, $http){
     getItem('grains');
     getItem('hops');
-    getItem('yeast');
+    getItem('yeasts');
 
     $scope.recipe = {
-      name: 'Enter Name',
+      name: '',
       grains: {
         totalWeight: function() {
           var total = 0;
@@ -40,7 +44,14 @@
           return total;
         },
         efficiencyPPG: function(){
-          return Math.round($scope.recipe.grains.totalPPG() * ($scope.recipe.efficiency / 100) * 1000) / 1000 + 1;
+          var effPPG = Math.round($scope.recipe.grains.totalPPG() * ($scope.recipe.efficiency / 100) * 1000) / 1000 + 1;
+          if(effPPG > 1.5) {
+            effPPG = 1.5;
+          }
+          if(effPPG.toString().length > 5) {
+            effPPG = effPPG.toString().slice(0, 5);
+          };
+          return effPPG;
         },
         added: []
       },
@@ -50,11 +61,20 @@
       hops: {
         added: [],
         ibu: function() {
-          if($scope.recipe.hops.added.length > 0) {
+          if($scope.recipe.hops.added.length > 0 && $scope.recipe.grains.added.length > 0) {
             var ibu = 0;
-            var util = 26.8;
+            var aau = 0;
+            var bigFact = 1.65 * Math.pow(0.000125, ($scope.recipe.og() - 1));
             $scope.recipe.hops.added.forEach(function(hop) {
-              ibu += hop.hopWt * hop.Alpha_Acid * util / ($scope.recipe.volume * 1.34);
+              aau = hop.hopWt * (hop.Alpha_Acid / 100) * 7490 / $scope.recipe.volume;
+              if(hop.hopType == 'boil') {
+                var boilTFact = ((1 - Math.pow(2.71828182845904523536, (-.04 * hop.hopTime))) / 3.8);
+                var util = bigFact * boilTFact;
+                ibu += util * aau;
+              } else if(hop.hopType == 'whirlpool') {
+                var util = 10;
+                ibu += util * aau
+              }
             });
             return Math.round(ibu * 100) / 100;
           }
@@ -71,7 +91,11 @@
       fg: function() {
         if($scope.recipe.grains.added.length > 0) {
           var yeastFood = Math.round((($scope.recipe.grains.efficiencyPPG() - 1) * 1000) * ($scope.recipe.attenuation / 100)) / 1000;
-          return $scope.recipe.og() - yeastFood;
+          yeastFood = $scope.recipe.og() - yeastFood;
+          if(yeastFood.toString().length > 5) {
+            yeastFood = yeastFood.toString().slice(0, 5);
+          }
+          return yeastFood;
         } else {
         return 0
         }
@@ -110,10 +134,12 @@
       },
       notes: ''
     };
+    //generic function to add an item to the array for those ingredients
     $scope.addIngredient = function(ingredient, type){
       $scope.recipe[ingredient].added.push($scope[type]);
       $scope.grain = {};
     }
+    //remove button function - removes one item from the array
     $scope.deleteItem = function(index, type) {
       $scope.recipe[type].added.splice(index, 1);
     }
@@ -127,6 +153,8 @@
       })
     };
   }]);
+
+  //extra for a calculator controller
   app.controller('dbsgCalc', ['$scope', function($scope){
     console.log('clicked');
     console.log($scope.dbfg + $scope.name);

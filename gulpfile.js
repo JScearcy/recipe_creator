@@ -18,7 +18,8 @@ gulp.task('default', ['process-js',
                       'process-angular-animate',
                       'process-angular-aria',
                       'process-angular-route',
-                      'process-jade'],
+                      'process-jade',
+                      'process-images'],
                       function(){
                         gutil.log('Gulped!');
 });
@@ -68,3 +69,52 @@ gulp.task('process-angular-route', function(){
   return gulp.src('./node_modules/angular-route/angular-route.min.*')
   .pipe(gulp.dest('./public/vendors/angularjs'))
 })
+gulp.task('process-images', function(){
+  return gulp.src('./client/images/*.png')
+  .pipe(gulp.dest('./public/images'))
+})
+
+gulp.task('production', ['move-public',
+                         'move-models',
+                         'move-routes',
+                         'move-views',
+                         'move-appjs',
+                         'move-packagejson',
+                         'move-images',
+                         'move-bin'],
+                         function(){
+                           gutil.log('gulp moved public')
+                         })
+
+gulp.task('move-public', function(){
+  return gulp.src('./public/**/*')
+  .pipe(gulp.dest('../production/public'));
+});
+gulp.task('move-models', function(){
+  return gulp.src('./models/*')
+  .pipe(gulp.dest('../production/models'));
+});
+gulp.task('move-routes', function(){
+  return gulp.src('./routes/*')
+  .pipe(gulp.dest('../production/routes'));
+});
+gulp.task('move-views', function(){
+  return gulp.src('./views/*')
+  .pipe(gulp.dest('../production/views'));
+});
+gulp.task('move-appjs', function(){
+  return gulp.src('app.js')
+  .pipe(gulp.dest('../production'));
+});
+gulp.task('move-packagejson', function(){
+  return gulp.src('package.json')
+  .pipe(gulp.dest('../production'));
+});
+gulp.task('move-bin', function(){
+  return gulp.src('./bin/*')
+  .pipe(gulp.dest('../production/bin'));
+});
+gulp.task('move-images', function(){
+  return gulp.src('./client/images/*')
+  .pipe(gulp.dest('../production/public/images'));
+});

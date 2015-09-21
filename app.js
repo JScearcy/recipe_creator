@@ -27,7 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/grains', grains);
 app.use('/hops', hops);
-app.use('/yeast', yeasts);
+app.use('/yeasts', yeasts);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

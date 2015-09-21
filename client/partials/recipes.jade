@@ -1,14 +1,20 @@
-ul(class="recipeCalcs")
-  li(class="calcList") OG: {{recipe.og()}}
-  li(class="calcList") FG: {{recipe.fg()}}
-  li(class="calcList") ABV: {{recipe.abv() + '%'}}
-  li(class="calcList") IBUs: {{recipe.hops.ibu()}}
-  li(class="calcList") Color(SRM Morey): {{recipe.srm()}}
-  li(class="calcList") Diastatic Power: {{recipe.dp()}}
+//- md-subheader(class="md-primary md-raised")
+md-toolbar(class="recipeCalcs")
+  ul
+    li(class="calcList") {{recipe.name}}
+    li(class="calcList") OG: {{recipe.og()}}
+    li(class="calcList") FG: {{recipe.fg()}}
+    li(class="calcList") ABV: {{recipe.abv() + '%'}}
+    li(class="calcList") IBUs: {{recipe.hops.ibu()}}
+    li(class="calcList") Color(SRM Morey): {{recipe.srm()}}
+    li(class="calcList") Diastatic Power: {{recipe.dp()}}
   
-md-tabs(class="md-raised md-primary" md-dynamic-height md-border-bottom)
+md-tabs(class="md-primary" md-dynamic-height md-border-bottom)
   md-tab(label="Recipe Config")
     md-content(layoutpadding layout="column" layout-sm="column")
+      md-input-container(class="configInput")
+        label(for="name") Enter Recipe  Name
+        input(type="text" ng-model="recipe.name" name="name" id="name")
       md-input-container(class="configInput")
         label(for="volume") Volume(gal)
         input(type="number" ng-model="recipe.volume" name="volume" id="volume")
@@ -20,7 +26,6 @@ md-tabs(class="md-raised md-primary" md-dynamic-height md-border-bottom)
         input(type="number" ng-model="recipe.attenuation" name="attenuation" id="attenuation")
   md-tab(label="Grains")
     .box.grains
-      md-button(ng-click="recipe.grains.efficiencyPPG()")
       md-content(layout-padding layout="row" layout-sm="column")
         md-input-container(class="ingredient")
           label(for='grains') Grains
@@ -55,10 +60,10 @@ md-tabs(class="md-raised md-primary" md-dynamic-height md-border-bottom)
           th 
             md-button(class="md-raised md-warn" ng-click="deleteItem($index, 'grains')") Remove
         tr
-          th Totals
+          th Total
           th
           th {{recipe.grains.totalWeight()}} 
-          th {{1 + recipe.grains.totalPPG()}}
+          th
           th 
           th
   md-tab(label="Hops")   
@@ -76,7 +81,10 @@ md-tabs(class="md-raised md-primary" md-dynamic-height md-border-bottom)
           md-select(ng-model='hop.hopType' name='hopType' id='hopType' required)
             md-option(value="boil") Boil
             md-option(value="whirlpool") Whirlpool
-            md-option(value="dryhop") Dry Hop
+            md-option(value="dryhop") Dry Hop 
+        md-input-container
+          label(for="time") time
+          input(ng-model="hop.hopTime" name="time" id="time")
         md-button(class='md-raised md-primary' ng-click='addIngredient("hops", "hop")' aria-label='Add Hops' ng-disabled="!hop || !hop.hopWt") Add Hops
         h2 {{hop.Name}}
         ul(class="hopList")
@@ -122,5 +130,5 @@ md-tabs(class="md-raised md-primary" md-dynamic-height md-border-bottom)
     .notes
       md-content
         md-input-container
-          label(for="notes")
+          label(for="notes") Add Notes...
           textarea(rows="5" cols="8" name="notes" id="notes" ng-model="notes")
