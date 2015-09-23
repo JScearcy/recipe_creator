@@ -8,7 +8,6 @@ body {
   background-color: rgb(255, 193, 7);
   min-height: 50px
 }
-
 a {
   color: #00B7FF;
 }
@@ -38,6 +37,13 @@ th {
   width: 50%;
 }
 .calcList {
-  display: inline;
-  margin: 10px 20px;
+  display: inline-flex;
+  margin: 10px 10px;
+}
+.mainCalcList {
+  text-align: center;
+  padding: 0;
+}
+md-tabs.md-primary > md-tabs-wrapper > md-tabs-canvas > md-pagination-wrapper > md-tab-item:not([disabled]) {
+    color: rgb(121, 114, 90);
 }

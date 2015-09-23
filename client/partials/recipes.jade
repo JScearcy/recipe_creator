@@ -1,6 +1,5 @@
-//- md-subheader(class="md-primary md-raised")
 md-toolbar(class="recipeCalcs")
-  ul
+  ul(class='mainCalcList')
     li(class="calcList") {{recipe.name}}
     li(class="calcList") OG: {{recipe.og()}}
     li(class="calcList") FG: {{recipe.fg()}}
@@ -24,6 +23,7 @@ md-tabs(class="md-primary" md-dynamic-height md-border-bottom)
       md-input-container(class="configInput")
         label(for="attenuation") Custom Attenuation
         input(type="number" ng-model="recipe.attenuation" name="attenuation" id="attenuation")
+    md-button(ng-show="user.username" class="md-primary md-button" ng-click="saveRecipe()") Save Recipe
   md-tab(label="Grains")
     .box.grains
       md-content(layout-padding layout="row" layout-sm="column")
@@ -66,6 +66,7 @@ md-tabs(class="md-primary" md-dynamic-height md-border-bottom)
           th
           th 
           th
+      md-button(ng-show="user.username" class="md-primary md-button" ng-click="saveRecipe()") Save Recipe
   md-tab(label="Hops")   
     .box.hops
       md-content(layout-padding layout="row" layout-sm="column")
@@ -110,6 +111,7 @@ md-tabs(class="md-primary" md-dynamic-height md-border-bottom)
           th {{hop.hopType}}
           th
             md-button(class="md-raised md-warn" ng-show="hop" ng-click="deleteItem($index, 'hops')") Remove 
+    md-button(ng-show="user.username" class="md-primary md-button" ng-click="saveRecipe()") Save Recipe  
     
       
   md-tab(label="Yeast")    
@@ -125,6 +127,7 @@ md-tabs(class="md-primary" md-dynamic-height md-border-bottom)
         p(ng-show="yeast.Flocculation") Flocculation: {{yeast.Flocculation}}
         p(ng-show="yeast.Attenuation") Avg Attenuation: {{yeast.Attenuation[1] + yeast.Attenuation[2] + '-' + yeast.Attenuation[4] + yeast.Attenuation[5] + "%"}} 
         p(ng-show="yeast.Temp_Range") Preferred Temp Range: {{yeast.Temp_Range[1] + yeast.Temp_Range[2] + '-' + yeast.Temp_Range[4] + yeast.Temp_Range[5] + " degrees F"}}
+    md-button(ng-show="user.username" class="md-primary md-button" ng-click="saveRecipe()") Save Recipe
   
   md-tab(label="Notes")
     .notes
@@ -132,3 +135,7 @@ md-tabs(class="md-primary" md-dynamic-height md-border-bottom)
         md-input-container
           label(for="notes") Add Notes...
           textarea(rows="5" cols="8" name="notes" id="notes" ng-model="notes")
+      md-button(ng-show="user.username" class="md-primary md-button" ng-click="saveRecipe()") Save Recipe
+  
+  md-tab(label="Saved Recipes")
+    div(ng-include='user.recipetemplate')

@@ -19,7 +19,9 @@ gulp.task('default', ['process-js',
                       'process-angular-aria',
                       'process-angular-route',
                       'process-jade',
-                      'process-images'],
+                      'process-images',
+                      'process-angular-jwt',
+                      'process-private-views'],
                       function(){
                         gutil.log('Gulped!');
 });
@@ -68,11 +70,20 @@ gulp.task('process-jade', function(){
 gulp.task('process-angular-route', function(){
   return gulp.src('./node_modules/angular-route/angular-route.min.*')
   .pipe(gulp.dest('./public/vendors/angularjs'))
-})
+});
 gulp.task('process-images', function(){
   return gulp.src('./client/images/*.png')
   .pipe(gulp.dest('./public/images'))
-})
+});
+gulp.task('process-angular-jwt', function(){
+  return gulp.src('./node_modules/angular-jwt/dist/angular-jwt.min.js')
+  .pipe(gulp.dest('./public/vendors/angularjs'))
+});
+gulp.task('process-private-views', function(){
+  return gulp.src('./client/private/*.jade')
+  .pipe(jade())
+  .pipe(gulp.dest('./private/views'))
+});
 
 gulp.task('production', ['move-public',
                          'move-models',

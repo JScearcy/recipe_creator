@@ -1,6 +1,6 @@
 {
   "name": "Prime_Personal_Project",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
@@ -9,6 +9,7 @@
     "angular": "^1.4.5",
     "angular-animate": "^1.4.5",
     "angular-aria": "^1.4.5",
+    "angular-jwt": "0.0.9",
     "angular-material": "^0.11.0",
     "angular-route": "^1.4.5",
     "bcrypt": "^0.8.5",

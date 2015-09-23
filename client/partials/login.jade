@@ -1,0 +1,13 @@
+div(layout="column") 
+  div(layout="row" layout-align="center")
+    h1(layout="row") Login Here
+    md-content(layout-padding layout-align="center" flex="40" layout="row" layout-sm="column")
+      md-input-container(layout-align="center center")
+        label Username
+        input(ng-model="user.username" type="text")
+      md-input-container(layout-align="center center")
+        label Password
+        input(ng-model="user.password" type="password")
+  div(layout="row" layout-align="center")
+      md-button(class="md-primary md-raised" ng-click="userLogin()" aria-label="Login button") Login
+      a(class="md-button md-primary md-raised" href="/register" aria-label="Register button") Register

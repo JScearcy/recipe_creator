@@ -1,0 +1,34 @@
+
+div(layout="row" layout-align="center center")
+  //- h1 Registration is currently closed.
+  div(layout="column")  
+    div(layout="row" layout-align="center")
+      md-content(layout-padding layout-align="center" layout="row" layout-sm="column")
+        form
+          div(layout="row")
+            md-input-container(layout-align="center center")
+              label Username
+              input(ng-model="user.username" required)
+          div(layout="row")
+            md-input-container(layout-align="center center")
+              label Password
+              input(ng-model="user.password" type="password" required)
+            md-input-container(layout-align="center center")
+              label Confirm Password
+              input(ng-model="user.passwordConfirm" type="password" required)
+          div(layout="row")    
+            md-input-container(layout-align="center center")
+              label Email
+              input(ng-model="user.email" type="email" required)
+          div(layout="row")
+            md-input-container(layout-align="center center")
+              label First Name
+              input(ng-model="user.first_name" type="text" required)
+            md-input-container(layout-align="center center")
+              label Last Name
+              input(ng-model="user.last_name" type="text")
+    div(layout="row" ng-show="user.err" layout-align="center center")
+      p(class='error') {{user.err}}
+            
+    div(layout="row" layout-align="center")
+        md-button(class="md-primary md-raised" ng-click="registerUser()" aria-label="Register button") Register

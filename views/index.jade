@@ -1,19 +1,23 @@
 extends layout
 
 block content
-  .headingDiv(class="md-primary")
+  .headingDiv(class="md-primary" ng-controller="headerControl")
     header(class="headerImg")
-    md-toolbar(layout="row")
-      md-menu
-        a(class="md-toolbar-tools md-button md-default-theme" href="/") Home
-      md-menu
-        md-menu-bar
-          md-menu 
-            a(class="md-toolbar-tools md-button md-default-theme" href="" ng-mouseenter="$mdOpenMenu()" aria-label="Open calculators menu") Calculate
-            md-menu-content(class="md-default-theme")
-              md-menu-item
-                a(class="md-button md-default-theme" href='/dbsg_calc') Calc SG from DBFG
-      md-menu
-        a(class="md-toolbar-tools md-button md-default-theme" href="mailto:jacobscearcy@gmail.com") Contact
-  div(ng-view)
+    md-toolbar(layout="row" layout-sm="column" ng-cloak)
+      md-menu(flex)
+        a(class="md-toolbar-tools md-button md-default-theme" href="/" layout-align="center center") Home
+        span
+      md-menu(flex)
+        md-button(layout-align="center center" class="md-toolbar-tools md-button md-default-theme" ng-click="$mdOpenMenu()" aria-label="Open calculators menu") Calculate
+        md-menu-content(class="md-toolbar-tools md-default-theme" layout-align="start end")
+          md-menu-item
+            a(class="md-toolbar-tools md-button md-default-theme" href='/dbsg_calc') Calc SG from DBFG
+      md-menu(flex)
+        a(layout-align="center center" class="md-toolbar-tools md-button md-default-theme" href="mailto:jacobscearcy@gmail.com") Contact
+        span
+      md-menu(flex)
+        a(layout-align="center center" ng-hide="user.username" class="md-toolbar-tools md-button md-default-theme" href="/login") Login/Register
+        a(layout-align="center center" ng-show="user.username" ng-click="logOut()" class="md-toolbar-tools md-button md-default-theme" href="/") Logout {{user.username}}
+        span
+  div(ng-view ng-cloak)
     

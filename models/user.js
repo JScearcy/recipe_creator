@@ -6,20 +6,10 @@ var bcrypt = require('bcrypt');
 var jsonwebtoken = require('jsonwebtoken');
 var SALT_WORK_FACTOR = 8;
 
-var RecipeSchema = new Schema ({
-  name: {type: String, required: true},
-  grains: {added: Array, required: true},
-  efficiency: {type: Number, required: true},
-  volume: {type: Number, required: true},
-  attenuation: {type: Number, required: true},
-  hops: {added: {type: Array, required: true}},
-  notes: String
-});
-
 var UserSchema = new Schema ({
-  username: {type: String, required: true},
+  username: {type: String, required: true, index: {unique: true}},
   password: {type: String, required: true},
-  email: {type: String, required: true},
+  email: {type: String, required: true, index: {unique: true}},
   first_name: {type: String, required: true},
   last_name: {type: String}
 });
@@ -43,6 +33,29 @@ UserSchema.pre('save', function(next){
   })
 });
 
+UserSchema.statics.Create = function(user, callback) {
+  this.findOne({username: user.username}, function(err, exists){
+    if (err) return callback(err);
+    if (exists) return callback(new Error('User already exists'), null);
+    this.findOne({email: user.email}, function(err, exists){
+        if (err) return callback(err);
+        if (exists) return callback(new Error('Email already used'), null);
+        var User = mongoose.model('User', UserSchema);
+        var newUser = new User({
+          username: user.username,
+          password: user.password,
+          email: user.email,
+          first_name: user.first_name,
+          last_name: user.last_name
+        });
+        newUser.save(function(err, newUser){
+          if(err) return callback(err);
+          return callback(null, newUser);
+      })
+    })
+  })
+}
+
 UserSchema.methods.comparePassword = function(testPass, callback){
   bcrypt.compare(testPass, this.password, function(err, match) {
     if (err) callback(err);
@@ -51,7 +64,6 @@ UserSchema.methods.comparePassword = function(testPass, callback){
 };
 
 UserSchema.statics.userAuth = function (user, callback) {
-    console.log('getAuthenticated', user);
     this.findOne({username: user.username}, function (err, doc) {
         if (err) {
             console.log(err);
@@ -77,7 +89,7 @@ UserSchema.statics.userAuth = function (user, callback) {
                       lastName: doc.lastName
                   };
                   // return the jwt
-                  var token = jsonwebtoken.sign(user, 'supersecret', {
+                  var token = jsonwebtoken.sign(user, process.env.SECRET, {
                       expiresInMinutes: 1440 // expires in 24 hours
                   });
                   return callback(null, token, user);
@@ -90,3 +102,5 @@ UserSchema.statics.userAuth = function (user, callback) {
         }
     });
 };
+
+module.exports = mongoose.model('User', UserSchema)
