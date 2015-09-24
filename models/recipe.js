@@ -9,6 +9,7 @@ var RecipeSchema = new Schema ({
   volume: {type: Number, required: true},
   attenuation: {type: Number, required: true},
   hops: {added: Array},
+  yeast: Schema.Types.Mixed,
   notes: String
 });
 
@@ -29,7 +30,8 @@ RecipeSchema.statics.Create = function(recipe, callback) {
       hops: {
         added: recipe.hops.added
       },
-      notes: recipe.notes,
+      yeast: recipe.yeast,
+      notes: recipe.notes
     });
     newRecipe.save(function(err, newRecipe){
       if(err) return callback(err);

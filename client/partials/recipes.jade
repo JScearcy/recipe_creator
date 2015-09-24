@@ -1,3 +1,4 @@
+    
 md-toolbar(class="recipeCalcs")
   ul(class='mainCalcList')
     li(class="calcList") {{recipe.name}}
@@ -7,26 +8,32 @@ md-toolbar(class="recipeCalcs")
     li(class="calcList") IBUs: {{recipe.hops.ibu()}}
     li(class="calcList") Color(SRM Morey): {{recipe.srm()}}
     li(class="calcList") Diastatic Power: {{recipe.dp()}}
-  
+
 md-tabs(class="md-primary" md-dynamic-height md-border-bottom)
   md-tab(label="Recipe Config")
-    md-content(layoutpadding layout="column" layout-sm="column")
+    md-content(layoutpadding layout="column" layout-sm="column" layout-align="center center")
       md-input-container(class="configInput")
-        label(for="name") Enter Recipe  Name
-        input(type="text" ng-model="recipe.name" name="name" id="name")
-      md-input-container(class="configInput")
-        label(for="volume") Volume(gal)
-        input(type="number" ng-model="recipe.volume" name="volume" id="volume")
-      md-input-container(class="configInput")
-        label(for="efficiency") Custom Efficiency
-        input(type="number" ng-model="recipe.efficiency" name="efficiency" id="efficiency")
-      md-input-container(class="configInput")
-        label(for="attenuation") Custom Attenuation
-        input(type="number" ng-model="recipe.attenuation" name="attenuation" id="attenuation")
-    md-button(ng-show="user.username" class="md-primary md-button" ng-click="saveRecipe()") Save Recipe
+        form(flex name="recipeName")
+          label(for="name") Enter Recipe Name
+          input(type="text" ng-pattern="/^[a-zA-Z0-9 _.']*[a-zA-Z0-9 _.'][a-zA-Z0-9 _.']*$/" ng-model="recipe.name" name="name" id="name")
+          div(class="warning md-button" ng-show="recipeName.name.$error.pattern")
+            p(class="warningType") Letters, numbers, spaces, 
+            p(class="warningType") underscores, and periods only.
+      form(layout="row" layout-sm="column" class="configInput" layout-align="center center" name="customizeForm")
+        md-input-container(flex)
+          label(for="volume") Volume(gal)
+          input(type="number" min="1" ng-pattern="/^[0-9]+$/" ng-model="recipe.volume" name="volume" id="volume")
+        md-input-container(flex)
+          label(for="efficiency") Efficiency
+          input(type="number" min="1" max="100" ng-pattern="/^[0-9]+$/" ng-model="recipe.efficiency" name="efficiency" id="efficiency")
+        md-input-container(flex)
+          label(for="attenuation") Attenuation
+          input(type="number" min="1" max="100" ng-pattern="/^[0-9]+$/" ng-model="recipe.attenuation" name="attenuation" id="attenuation")
+      md-input-container(layout-align="start start")
+        md-button(ng-show="user.username" class="md-primary md-button" ng-click="saveRecipe()") Save Recipe
   md-tab(label="Grains")
-    .box.grains
-      md-content(layout-padding layout="row" layout-sm="column")
+    div(class='box grains' layout="column")
+      md-content(layout-padding layout="row" layout-sm="column" layout-align="center")
         md-input-container(class="ingredient")
           label(for='grains') Grains
           md-select(name='grains' id='grains' ng-model='grain' required)
@@ -34,108 +41,91 @@ md-tabs(class="md-primary" md-dynamic-height md-border-bottom)
         md-input-container
           label(for='grainsWt') Weight(lbs.)
           input(type="number" ng-model="grain.grainWt" name="grainsWt" id="grainsWt")
-        md-button(class='md-raised md-primary' ng-click='addIngredient("grains", "grain")' aria-label='Add Grains' ng-disabled='!grain || !grain.grainWt') Add Grains
-      h2 {{grain.name}}
-      ul(class="grainList" ng-show="grain.name")
-        li Flavor: {{grain.flavor}}
-        li PPG: {{grain.PPG}}
-        li Lovi: {{grain.lovi}}
-      table(ng-show="recipe.grains.added.length > 0" class="ingredientTable")
-        tr
-          th Name
-          th Flavor
-          th Amount(lbs)
-          th PPG
-          th Lovi
-          th
-        tr(ng-show="recipe.grains.added" ng-repeat="recipegrain in recipe.grains.added track by $index")
-          th {{recipegrain.name}}
-          th {{recipegrain.flavor}}
-          th
+      md-button(class='md-raised md-primary ingredientBtn' ng-click='addIngredient("grains", "grain")' aria-label='Add Grains' ng-disabled='!grain || !grain.grainWt') Add Grains
+      div(layout="row" layout-align="center")
+        h2 {{grain.name}}
+        ul(class="grainList" ng-show="grain.name")
+          li Flavor: {{grain.flavor}}
+          li PPG: {{grain.PPG}}
+          li Lovi: {{grain.lovi}}
+          
+      div(ng-show="recipe.grains.added.length > 0" layout="row"  layout-sm="column" layout-md="column"  class="tableMain" layout-align="center")
+        div(ng-show="recipe.grains.added" ng-repeat="recipegrain in recipe.grains.added track by $index" layout="row" class="tableRow md-button" flex-gt-lg="20" flex-md="50" flex-lg="40" flex-sm="90")
+          div(flex class="oneGrain")
+            p {{recipegrain.name}}
             md-input-container
-              label(for="grainWtChng")
-              input(type="number" class="grainWtChngIn" name="grainWtChng" id="grainWtChng" ng-model='recipegrain.grainWt' ng-value="{{addedGrain.grainWt}}" aria-label="weight")
-          th {{recipegrain.PPG}}
-          th {{recipegrain.lovi}}
-          th 
+              label(for="grainWtChng") Weight(lbs)
+              input(flex type="number" class="grainWtChngIn" name="grainWtChng" id="grainWtChng" ng-model='recipegrain.grainWt' ng-value="{{recipegrain.grainWt}}" aria-label="weight")
+            ul(class="gridList" layout="row")
+              li(class="grainItem") PPG: {{recipegrain.PPG}}
+              li(class="grainItem") Lovi: {{recipegrain.lovi}}
             md-button(class="md-raised md-warn" ng-click="deleteItem($index, 'grains')") Remove
-        tr
-          th Total
-          th
-          th {{recipe.grains.totalWeight()}} 
-          th
-          th 
-          th
-      md-button(ng-show="user.username" class="md-primary md-button" ng-click="saveRecipe()") Save Recipe
+      md-button(ng-show="user.username" class="md-primary md-button ingredientBtn" ng-click="saveRecipe()") Save Recipe
+      
   md-tab(label="Hops")   
-    .box.hops
-      md-content(layout-padding layout="row" layout-sm="column")
+    div(class="box hops" layout="column")
+      md-content(layout-padding layout="row" layout-sm="column" layout-align="center")
         md-input-container(class="ingredient")
           label(for='hops') Hops
           md-select(name='hops' id='hops' ng-model='hop' required)
             md-option(ng-repeat='hop in hops' ng-value='{{hop}}') {{hop.Name}}  
         md-input-container
           label(for='hopsWt') Weight(oz)
-          input(ng-model="hop.hopWt" name="hopsWt" id="hopsWt")
+          input(type="number" ng-model="hop.hopWt" name="hopsWt" id="hopsWt")
         md-input-container
-          label(for='hopType') type
+          label(for='hopType') Type
           md-select(ng-model='hop.hopType' name='hopType' id='hopType' required)
             md-option(value="boil") Boil
             md-option(value="whirlpool") Whirlpool
             md-option(value="dryhop") Dry Hop 
         md-input-container
-          label(for="time") time
-          input(ng-model="hop.hopTime" name="time" id="time")
-        md-button(class='md-raised md-primary' ng-click='addIngredient("hops", "hop")' aria-label='Add Hops' ng-disabled="!hop || !hop.hopWt") Add Hops
+          label(for="time") Time
+          input(type="number" min="1" ng-model="hop.hopTime" name="time" id="time")
+      div(ng-show="hop.Name" layout="row" layout-align="center")
         h2 {{hop.Name}}
         ul(class="hopList")
-          li(ng-show="hop") AA%: {{hop.Alpha_Acid}}
-          li(ng-show="hop") Notes: {{hop.Notes}}
-          li(ng-show="hop") Origin: {{hop.Origin}}
-          //- li {{grain.PPG}}  
-      table(ng-show="recipe.hops.added.length > 0" class="ingredientTable")
-        tr
-          th Name
-          th Alpha Acid
-          th Beta Acid
-          th Weight(oz)
-          th IBUs
-          th Utilization
-          th
-        tr(ng-repeat="hop in recipe.hops.added track by $index")
-          th {{hop.Name}}
-          th {{hop.Alpha_Acid}}
-          th {{hop.Beta_Acid}}
-          th {{hop.hopWt + ' Ounces'}}
-          th {{hop.ibu}}
-          th {{hop.hopType}}
-          th
-            md-button(class="md-raised md-warn" ng-show="hop" ng-click="deleteItem($index, 'hops')") Remove 
-    md-button(ng-show="user.username" class="md-primary md-button" ng-click="saveRecipe()") Save Recipe  
+          li AA%: {{hop.Alpha_Acid}}
+          li Notes: {{hop.Notes}}
+          li Origin: {{hop.Origin}}
+      md-button(class='ingredientBtn md-raised md-primary' ng-click='addIngredient("hops", "hop")' aria-label='Add Hops' ng-disabled="!hop || !hop.hopWt") Add Hops      
+      
+      div(ng-show="recipe.hops.added.length > 0" layout="row"  layout-sm="column" layout-md="column"  class="tableMain" layout-align="center")
+        div(ng-repeat="recipeHop in recipe.hops.added track by $index" layout="row" class="tableRow md-button" flex-gt-lg="20" flex-md="50" flex-lg="40" flex-sm="90")
+          div(flex class="oneGrain")
+            p {{recipeHop.Name}}
+            md-input-container
+              label(for="hopWtChng") Weight(oz)
+              input(flex type="number" class="grainWtChngIn" name="hopWtChng" id="hopWtChng" ng-model='recipeHop.hopWt' ng-value="{{addedGrain.grainWt}}" aria-label="weight")
+            ul(class="gridList" layout="row")
+              li(class="hopItem") AA%: {{recipeHop.Alpha_Acid}}
+              li(class="hopItem") Time(min): {{recipeHop.hopTime}}
+            md-button(class="md-raised md-warn" ng-click="deleteItem($index, 'hops')") Remove
+      md-button(ng-show="user.username" class="ingredientBtn md-primary md-button" ng-click="saveRecipe()") Save Recipe  
     
       
   md-tab(label="Yeast")    
-    .box.yeasts
-      md-content(layout-padding layout="row" layout-sm="column")
+    div(class="box yeasts" layout="column")
+      md-content(layout-padding layout="row" layout-sm="column" layout-align="center")
         md-input-container(class="ingredient")
           label(for='yeast') Yeast
           md-select(name='yeast' id='yeast' ng-model='yeast' required)
             md-option(ng-repeat='yeast in yeasts' ng-value='{{yeast}}') {{yeast.ID + ' ' + yeast.Name}}
-      .yeast(ng-show='yeast')
+      .yeast(ng-show='yeast' layout-align="center" layout="row")
         h2(ng-show="yeast.ID") {{yeast.ID + ' ' + yeast.Name}}
-        p(ng-show="yeast.Character") Character: {{yeast.Character}}
-        p(ng-show="yeast.Flocculation") Flocculation: {{yeast.Flocculation}}
-        p(ng-show="yeast.Attenuation") Avg Attenuation: {{yeast.Attenuation[1] + yeast.Attenuation[2] + '-' + yeast.Attenuation[4] + yeast.Attenuation[5] + "%"}} 
-        p(ng-show="yeast.Temp_Range") Preferred Temp Range: {{yeast.Temp_Range[1] + yeast.Temp_Range[2] + '-' + yeast.Temp_Range[4] + yeast.Temp_Range[5] + " degrees F"}}
-    md-button(ng-show="user.username" class="md-primary md-button" ng-click="saveRecipe()") Save Recipe
+        ul
+          li(ng-show="yeast.Character") Character: {{yeast.Character}}
+          li(ng-show="yeast.Flocculation") Flocculation: {{yeast.Flocculation}}
+          li(ng-show="yeast.Attenuation") Avg Attenuation: {{yeast.Attenuation[1] + yeast.Attenuation[2] + '-' + yeast.Attenuation[4] + yeast.Attenuation[5] + "%"}} 
+          li(ng-show="yeast.Temp_Range") Temp Range: {{yeast.Temp_Range[1] + yeast.Temp_Range[2] + '-' + yeast.Temp_Range[4] + yeast.Temp_Range[5] + " degrees F"}}
+      md-button(ng-show="user.username" class="ingredientBtn md-primary md-button" ng-click="saveRecipe()") Save Recipe
   
   md-tab(label="Notes")
     .notes
       md-content
         md-input-container
           label(for="notes") Add Notes...
-          textarea(rows="5" cols="8" name="notes" id="notes" ng-model="notes")
-      md-button(ng-show="user.username" class="md-primary md-button" ng-click="saveRecipe()") Save Recipe
+          textarea(rows="5" cols="8" name="notes" id="notes" ng-model="notes" flex="100")
+      md-button(ng-show="user.username" class="md-primary md-button ingredientBtn" ng-click="saveRecipe()") Save Recipe
   
   md-tab(label="Saved Recipes")
     div(ng-include='user.recipetemplate')

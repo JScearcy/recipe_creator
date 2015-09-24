@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var expressJwt = require('express-jwt');
+var expressValidator = require('express-validator');
 
 var routes = require('./routes/index');
 var grains = require('./routes/grains');
@@ -14,6 +15,7 @@ var yeasts = require('./routes/yeast');
 var register = require('./routes/register');
 var login = require('./routes/login');
 var recipes = require('./routes/auth/recipes');
+var catchall = require('./routes/catchall');
 
 var app = express();
 
@@ -39,6 +41,18 @@ app.set('view engine', 'jade');
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
+app.use(expressValidator({
+  customValidators: {
+    isUsername: function(value){
+      var userRegEx = /^[a-zA-Z0-9 _.]*[a-zA-Z0-9 _.][a-zA-Z0-9 _.]*$/;
+      return userRegEx.test(value);
+    },
+    isPassword: function(value) {
+      var passRegEx = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,32}$/;
+      return passRegEx.test(value);
+    }
+  }
+}));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -53,6 +67,7 @@ app.use('/hops', hops);
 app.use('/yeasts', yeasts);
 app.use('/register', register);
 app.use('/loginauth', login);
+app.use('/*', catchall);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

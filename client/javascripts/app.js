@@ -1,5 +1,4 @@
   var app = angular.module('recipeCreator', ['ngMaterial', 'ngRoute', 'angular-jwt']);
-
   app.config(['$routeProvider',
               '$locationProvider',
               '$mdThemingProvider',
@@ -29,8 +28,27 @@
     }).when('/register', {
       templateUrl:'/views/register.html',
       controller: 'registerControl'
+    }).otherwise('/', {
+      templateUrl: '/views/recipes.html',
+      controller: 'recipeMake'
     });
   }]);
+  app.directive('isMatch', function(){
+    return {
+      require: 'ngModel',
+      scope: {
+        otherVal: "=isMatch"
+      },
+      link: function(scope, elem, attr, ngModel) {
+        ngModel.$validators.isMatch = function(modelVal) {
+          return modelVal === scope.otherVal;
+        };
+        scope.$watch('otherVal', function(){
+          ngModel.$validate();
+        });
+      }
+    };
+  });
   app.service('PpgCalc', function (){
     this.calcPpg = function(dbfg) {
       return (1000 * (1 + (dbfg / 100) * 0.04621)) / 1000
@@ -100,7 +118,7 @@
                 var util = bigFact * boilTFact;
                 ibu += util * aau;
               } else if(hop.hopType == 'whirlpool') {
-                var util = 10;
+                var util = .10;
                 ibu += util * aau
               }
             });
@@ -169,7 +187,8 @@
           return 0;
         }
       },
-      notes: ''
+      notes: '',
+      yeast: $scope.yeast
     };
 
     $scope.saveRecipe = function(){
@@ -195,10 +214,18 @@
         console.log(res.data);
       })
     }
+    $scope.getSavedRecipes = function() {
+      $http({
+        method: 'post',
+        url: '/private/recipes/saved'
+      }).then(function(res){
+        console.log(res.data);
+      })
+    };
     //generic function to add an item to the array for those ingredients
     $scope.addIngredient = function(ingredient, type){
       $scope.recipe[ingredient].added.push($scope[type]);
-      $scope.grain = {};
+      $scope[type] = {};
     }
     //remove button function - removes one item from the array
     $scope.deleteItem = function(index, type) {
@@ -252,10 +279,13 @@
       }).then(function(res){
         if(res.data.token){
           sessionStorage.setItem('userToken', res.data.token);
+          $scope.user = {};
+          $location.url('/');
         };
-        $scope.user = {};
-        $location.url('/');
-      })
+      }, function(res){
+        $scope.error = res.data;
+        $scope.user.password = '';
+      });
     }
   }]);
 

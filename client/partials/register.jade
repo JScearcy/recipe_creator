@@ -4,31 +4,45 @@ div(layout="row" layout-align="center center")
   div(layout="column")  
     div(layout="row" layout-align="center")
       md-content(layout-padding layout-align="center" layout="row" layout-sm="column")
-        form
+        form(name="regForm")
           div(layout="row")
             md-input-container(layout-align="center center")
-              label Username
-              input(ng-model="user.username" required)
+              label(for="username") Username
+              input(ng-model="user.username" ng-pattern="/^[a-zA-Z0-9_.]*$/" name="username" id="username" required)
+          div(class="mildWarning md-button" ng-show="regForm.username.$error.pattern")    
+            p(class="warningType") Invalid Username 
+            p(class="warningType") Letters, numbers, _ or . only
           div(layout="row")
             md-input-container(layout-align="center center")
-              label Password
-              input(ng-model="user.password" type="password" required)
+              label(for="password") Password
+              input(ng-model="user.password" ng-blur="visitedPassword = true" ng-pattern="/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,32}$/" type="password" name="password" id="password" required)
             md-input-container(layout-align="center center")
-              label Confirm Password
-              input(ng-model="user.passwordConfirm" type="password" required)
+              label(for="conPass") Confirm Password
+              input(ng-model="user.passwordConfirm" ng-blur="visitedConfirm = true" type="password" name="conPass" id="conPass" is-match="user.password" required)
+          p(class="warning md-button" ng-show="regForm.conPass.$error.isMatch && visitedConfirm") Passwords must match
+          div(ng-show="regForm.password.$error.pattern && visitedPassword" class="mildWarning md-button")
+            p(class="warningType") Password must have:
+            p(class="warningType") one lowercase, 
+            p(class="warningType") one uppercase, one number, 
+            p(class="warningType") and one of these !@#$%^&*
+            p(class="warningType") 8-32 Characters long.
           div(layout="row")    
             md-input-container(layout-align="center center")
-              label Email
-              input(ng-model="user.email" type="email" required)
+              label(for="email") Email
+              input(ng-model="user.email" ng-blur="emailVisted = true" ng-pattern="/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/" type="email" name="email" id="email" required)
+          div(ng-show="regForm.email.$error.pattern && emailVisted" class="warning md-button")
+            p(class="warningType") Invalid Email
           div(layout="row")
             md-input-container(layout-align="center center")
-              label First Name
-              input(ng-model="user.first_name" type="text" required)
+              label(for="firstName") First Name
+              input(ng-model="user.first_name"  ng-pattern="/^[a-zA-Z ]*[a-zA-Z ][a-zA-Z ]*$/" name="firstName" id="firstName" type="text" required)
             md-input-container(layout-align="center center")
-              label Last Name
-              input(ng-model="user.last_name" type="text")
+              label(for="lastName") Last Name
+              input(ng-pattern="/^[a-zA-Z ]*[a-zA-Z ][a-zA-Z ]*$/" ng-model="user.last_name" name="lastName" id="lastName" type="text")
+          div(ng-show="regForm.firstName.$error.pattern || regForm.lastName.$error.pattern" class="warning md-button")
+            p(class="warningType") Letters and spaces only
     div(layout="row" ng-show="user.err" layout-align="center center")
       p(class='error') {{user.err}}
             
     div(layout="row" layout-align="center")
-        md-button(class="md-primary md-raised" ng-click="registerUser()" aria-label="Register button") Register
+        input(type="submit" class="md-button md-primary md-raised" ng-click="registerUser()" aria-label="Register button" value="Register")
