@@ -55,7 +55,7 @@
     }
   });
   //controller for the recipe builder
-  app.controller('recipeMake', ['$scope', '$http', 'jwtHelper', function($scope, $http, jwtHelper){
+  app.controller('recipeMake', ['$scope', '$http', 'jwtHelper', 'recipeFunc', function($scope, $http, jwtHelper, recipeFunc){
     $scope.user = {};
     $scope.user.recipetemplate = '/views/notloggedin.html';
     //get all items listed in the select menu
@@ -64,131 +64,35 @@
     getItem('yeasts');
     //The object used for recipe creation as well as calculations
     $scope.recipe = {
-      name: '',
-      grains: {
-        //this calculates the weight of all grains added
-        totalWeight: function() {
-          var total = 0;
-          $scope.recipe.grains.added.forEach(function(grain, index) {
-            if(grain.grainWt > 0){
-              total += parseInt(grain.grainWt);
-            }
-          })
-          return total;
-        },
-        //this calculates the max sugar extraction possible from the grains
-        totalPPG: function(){
-          var total = 0;
-          $scope.recipe.grains.added.forEach(function(grain, index){
-            total += (Math.round((grain.PPG - 1) * 1000 * grain.grainWt / $scope.recipe.volume)) / 1000;
-          })
-          return total;
-        },
-        //this calculates the estimated sugar extraction based on user's eff. input
-        efficiencyPPG: function(){
-          var effPPG = Math.round($scope.recipe.grains.totalPPG() * ($scope.recipe.efficiency / 100) * 1000) / 1000 + 1;
-          if(effPPG > 1.5) {
-            effPPG = 1.5;
-          }
-          if(effPPG.toString().length > 5) {
-            effPPG = effPPG.toString().slice(0, 5);
-          };
-          return effPPG;
-        },
-        //list of all grains added
-        added: []
-      },
-      //default inputs for efficiency, attenuation, and volume
       efficiency: 65,
       attenuation: 70,
       volume: 5,
+      grains: {
+        added: []
+      },
       hops: {
-        //list of all hops added
         added: [],
-        //calculates ibu's for user's input hops
-        ibu: function() {
-          if($scope.recipe.hops.added.length > 0 && $scope.recipe.grains.added.length > 0) {
-            var ibu = 0;
-            var aau = 0;
-            var bigFact = 1.65 * Math.pow(0.000125, ($scope.recipe.og() - 1));
-            $scope.recipe.hops.added.forEach(function(hop) {
-              aau = hop.hopWt * (hop.Alpha_Acid / 100) * 7490 / $scope.recipe.volume;
-              if(hop.hopType == 'boil') {
-                var boilTFact = ((1 - Math.pow(2.71828182845904523536, (-.04 * hop.hopTime))) / 3.8);
-                var util = bigFact * boilTFact;
-                ibu += util * aau;
-              } else if(hop.hopType == 'whirlpool') {
-                var util = .10;
-                ibu += util * aau
-              }
-            });
-            return Math.round(ibu * 100) / 100;
-          }
-          return 0;
+        ibu: function(){
+          return recipeFunc.ibu($scope.recipe.hops.added, $scope.recipe.grains.added, $scope.recipe.volume, $scope.recipe.og());
         }
       },
-      //this is the function to store the OG on the page
-      og: function() {
-        if($scope.recipe.grains.added.length > 0) {
-          return $scope.recipe.grains.efficiencyPPG();
-        } else {
-          return 0;
-        }
+      og: function(){
+        return recipeFunc.efficiencyPPG(recipeFunc.totalPPG($scope.recipe.grains.added, $scope.recipe.volume), $scope.recipe.efficiency)
       },
-      //this calculates the final gravity based on attenuation
-      fg: function() {
-        if($scope.recipe.grains.added.length > 0) {
-          var yeastFood = Math.round((($scope.recipe.grains.efficiencyPPG() - 1) * 1000) * ($scope.recipe.attenuation / 100)) / 1000;
-          yeastFood = $scope.recipe.og() - yeastFood;
-          if(yeastFood.toString().length > 5) {
-            yeastFood = yeastFood.toString().slice(0, 5);
-          }
-          return yeastFood;
-        } else {
-        return 0
-        }
+      fg: function(){
+        return recipeFunc.fg($scope.recipe.grains.added, $scope.recipe.og(), $scope.recipe.attenuation)
       },
-      //abv calc based on estimated OG and FG
       abv: function() {
-        if($scope.recipe.grains.added.length > 0) {
-          var og = $scope.recipe.og(),
-              fg = $scope.recipe.fg();
-          return Math.round((76.08 * (og-fg) / (1.775 - og)) * (fg / 0.794) * 100) / 100;
-        } else {
-          return 0
-        }
-      },
-      //estimate color based on grains added
+          return recipeFunc.abv($scope.recipe.grains.added, $scope.recipe.og(), $scope.recipe.fg());
+        },
       srm: function() {
-        if($scope.recipe.grains.added.length > 0) {
-          var totalColor = 0;
-          var mcu = $scope.recipe.grains.added.forEach(function(grain, index) {
-            totalColor += (grain.lovi * grain.grainWt);
-          });
-          mcu = totalColor / $scope.recipe.volume;
-          mcu = Math.round((1.4922 * (Math.pow(mcu, 0.6859))) * 100) / 100;
-          if(mcu > 50){
-            mcu = 50;
-          };
-          return mcu;
-        } else {
-          return 0;
-        }
-      },
-      //estimate enzymatic activity based on grains added
+          return recipeFunc.srm($scope.recipe.grains.added, $scope.recipe.volume);
+        },
       dp: function() {
-        if($scope.recipe.grains.added.length > 0) {
-          var totaldp = 0;
-          $scope.recipe.grains.added.forEach(function(grain, index) {
-            totaldp += grain.dp * grain.grainWt;
-          });
-          return Math.round(totaldp / $scope.recipe.grains.totalWeight());
-        } else {
-          return 0;
-        }
-      },
+          return recipeFunc.dp($scope.recipe.grains.added, recipeFunc.totalWeight($scope.recipe.grains.added));
+        },
       notes: '',
-      yeast: $scope.yeast
+      recipeyeast: $scope.yeast
     };
 
     $scope.saveRecipe = function(){
