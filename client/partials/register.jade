@@ -40,9 +40,8 @@ div(layout="row" layout-align="center center")
               label(for="lastName") Last Name
               input(ng-pattern="/^[a-zA-Z ]*[a-zA-Z ][a-zA-Z ]*$/" ng-model="user.last_name" name="lastName" id="lastName" type="text")
           div(ng-show="regForm.firstName.$error.pattern || regForm.lastName.$error.pattern" class="warning md-button")
-            p(class="warningType") Letters and spaces only
-    div(layout="row" ng-show="user.err" layout-align="center center")
-      p(class='error') {{user.err}}
-            
-    div(layout="row" layout-align="center")
-        input(type="submit" class="md-button md-primary md-raised" ng-click="registerUser()" aria-label="Register button" value="Register")
+            p(class="warningType") Letters and spaces only        
+          div(layout="row" layout-align="center")
+              input(type="submit" class="md-button md-primary md-raised" ng-click="registerUser()" aria-label="Register button" value="Register")
+        div(layout="row" ng-show="user.err" layout-align="center center")
+          p(class='error') {{user.err}}

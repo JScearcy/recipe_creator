@@ -11,7 +11,8 @@ var UserSchema = new Schema ({
   password: {type: String, required: true},
   email: {type: String, required: true, index: {unique: true}},
   first_name: {type: String, required: true},
-  last_name: {type: String}
+  last_name: {type: String},
+  username_lower: {type: String, required: true, index: {unique: true}}
 });
 
 UserSchema.pre('save', function(next){
@@ -34,24 +35,28 @@ UserSchema.pre('save', function(next){
 });
 
 UserSchema.statics.Create = function(user, callback) {
-  this.findOne({username: user.username}, function(err, exists){
+  this.findOne({username_lower: user.username.toLowerCase()}, function(err, exists){
     if (err) return callback(err);
-    if (exists) return callback(new Error('User already exists'), null);
-    this.findOne({email: user.email}, function(err, exists){
+    if (exists) return callback('User already exists', null);
+    this.find({email: user.email}, function(err, exists){
         if (err) return callback(err);
-        if (exists) return callback(new Error('Email already used'), null);
-        var User = mongoose.model('User', UserSchema);
-        var newUser = new User({
-          username: user.username,
-          password: user.password,
-          email: user.email,
-          first_name: user.first_name,
-          last_name: user.last_name
-        });
-        newUser.save(function(err, newUser){
-          if(err) return callback(err);
-          return callback(null, newUser);
-      })
+        if (exists.length > 0) {
+          return callback('Email already used', null);
+        } else {
+          var User = mongoose.model('User', UserSchema);
+          var newUser = new User({
+            username: user.username,
+            password: user.password,
+            email: user.email,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            username_lower: user.username.toLowerCase()
+          });
+          newUser.save(function(err, newUser){
+            if(err) return callback(err);
+            return callback(null, newUser);
+          })
+      }
     })
   })
 }
@@ -64,7 +69,7 @@ UserSchema.methods.comparePassword = function(testPass, callback){
 };
 
 UserSchema.statics.userAuth = function (user, callback) {
-    this.findOne({username: user.username}, function (err, doc) {
+    this.findOne({username_lower: user.username.toLowerCase()}, function (err, doc) {
         if (err) {
             console.log(err);
             return callback(err);

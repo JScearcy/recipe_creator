@@ -1,15 +1,15 @@
 div(layout="column") 
   h1(class="loginHeader") Login
-  div(layout="row" layout-align="center")
-    form(name="loginForm" layout-padding layout-align="center" flex="40" layout="row" layout-sm="column")
+  form(layout="column" name="loginForm" layout-align="center")
+    div(layout-padding layout-align="center" flex="40" layout="row" layout-sm="column")
       md-input-container(layout-align="center center")
         label(for="username") Username
         input(ng-model="user.username" type="text" name="username" id="username")
       md-input-container(layout-align="center center")
         label(for="password") Password
-        input(ng-model="user.password" type="password" name="password" id="password")
-  div(ng-show="error" class="warning md-button" flex="30" layout-align="center center")
-    p {{error}}
-  div(layout="row" layout-align="center")
-      md-button(class="md-primary md-raised" ng-click="userLogin()" aria-label="Login button") Login
-      a(class="md-button md-primary md-raised" href="/register" aria-label="Register button") Register
+        input(ng-model="user.password" type="password" name="password" id="password")  
+    div(ng-show="error" class="warning md-button" flex="30" layout-align="center center")
+      p {{error}}
+    div(layout="row" layout-align="center")
+        input(type="submit" class="md-button md-primary md-raised" ng-click="userLogin()" aria-label="Login button" value="Login")
+        a(class="md-button md-primary md-raised" href="/register" aria-label="Register button") Register

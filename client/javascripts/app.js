@@ -299,10 +299,10 @@
         url: '/register'
       }).then(function(res){
         $scope.user = res.data;
-        if(!$scope.user.err) {
-          $location.url('/login');
-        }
-      })
+        $location.url('/login');
+      }, function(res){
+        $scope.user = res.data;
+      });
     }
   }]);
   app.controller('headerControl', ['$rootScope', '$scope', 'jwtHelper', function($rootScope, $scope, jwtHelper){
