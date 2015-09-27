@@ -49,101 +49,42 @@
       }
     };
   });
-  app.service('PpgCalc', function (){
-    this.calcPpg = function(dbfg) {
-      return (1000 * (1 + (dbfg / 100) * 0.04621)) / 1000
-    }
-  });
   //controller for the recipe builder
   app.controller('recipeMake', ['$scope', '$http', 'jwtHelper', 'recipeFunc', function($scope, $http, jwtHelper, recipeFunc){
     $scope.user = {};
     $scope.user.recipetemplate = '/views/notloggedin.html';
-    //get all items listed in the select menu
-    getItem('grains');
-    getItem('hops');
-    getItem('yeasts');
-    //The object used for recipe creation as well as calculations
-    $scope.recipe = {
-      efficiency: 65,
-      attenuation: 70,
-      volume: 5,
-      grains: {
-        added: []
-      },
-      hops: {
-        added: [],
-        ibu: function(){
-          return recipeFunc.ibu($scope.recipe.hops.added, $scope.recipe.grains.added, $scope.recipe.volume, $scope.recipe.og());
-        }
-      },
-      og: function(){
-        return recipeFunc.efficiencyPPG(recipeFunc.totalPPG($scope.recipe.grains.added, $scope.recipe.volume), $scope.recipe.efficiency)
-      },
-      fg: function(){
-        return recipeFunc.fg($scope.recipe.grains.added, $scope.recipe.og(), $scope.recipe.attenuation)
-      },
-      abv: function() {
-          return recipeFunc.abv($scope.recipe.grains.added, $scope.recipe.og(), $scope.recipe.fg());
-        },
-      srm: function() {
-          return recipeFunc.srm($scope.recipe.grains.added, $scope.recipe.volume);
-        },
-      dp: function() {
-          return recipeFunc.dp($scope.recipe.grains.added, recipeFunc.totalWeight($scope.recipe.grains.added));
-        },
-      notes: '',
-      recipeyeast: $scope.yeast
-    };
 
-    $scope.saveRecipe = function(){
-      var recipe = {
-        username: $scope.user.username,
-        name: $scope.recipe.name,
-        grains: {
-          added: $scope.recipe.grains.added
-        },
-        efficiency: $scope.recipe.efficiency,
-        volume: $scope.recipe.volume,
-        attenuation: $scope.recipe.attenuation,
-        hops: {
-          added: $scope.recipe.hops.added
-        },
-        notes: $scope.notes
-      };
-      $http({
-        method: 'post',
-        url: '/private/recipes',
-        data: recipe
-      }).then(function(res){
-        console.log(res.data);
-      })
-    }
-    $scope.getSavedRecipes = function() {
-      $http({
-        method: 'post',
-        url: '/private/recipes/saved'
-      }).then(function(res){
-        console.log(res.data);
-      })
-    };
+    //get all items listed in the select menu
+    recipeFunc.getItem($http, $scope, 'grains');
+    recipeFunc.getItem($http, $scope, 'hops');
+    recipeFunc.getItem($http, $scope, 'yeasts');
+
+    //The object used for recipe creation as well as calculations
+    $scope.recipe = new recipeFunc.recipe($scope, recipeFunc);
+
+    //Save function for button ng-click
+    $scope.saveRecipe = function(){ return recipeFunc.saveRecipe($http, $scope, recipeFunc)};
+
     //generic function to add an item to the array for those ingredients
-    $scope.addIngredient = function(ingredient, type){
-      $scope.recipe[ingredient].added.push($scope[type]);
-      $scope[type] = {};
+    $scope.addIngredient = function(ingredient, type, model){
+      switch(type) {
+        case 'grains':
+          var addedIngredient = new recipeFunc.newGrain(ingredient);
+          break;
+        case 'hops':
+          var addedIngredient = new recipeFunc.newHop(ingredient);
+          break;
+        default:
+          var addedIngredient = {};
+      };
+      $scope.recipe[type].added.push(addedIngredient);
+      $scope[model] = {};
     }
     //remove button function - removes one item from the array
     $scope.deleteItem = function(index, type) {
       $scope.recipe[type].added.splice(index, 1);
     }
-    //generic function to call the server for a specific ingredient
-    function getItem(item){
-      $http({
-        method: 'GET',
-        url: '/' + item
-      }).then(function(res) {
-        $scope[item] = res.data;
-      })
-    };
+
     $scope.$watch(function(){
       return sessionStorage.getItem('userToken');
     }, function(){
@@ -157,24 +98,8 @@
       }
     });
   }]);
-
-
-  //extra for a calculator controller
-  app.controller('dbsgCalc', ['$scope', function($scope){
-    console.log('clicked');
-    console.log($scope.dbfg + $scope.name);
-    // $scope.addgrain = function(){
-    //   if(!$scope.grains) {
-    //     $scope.grains = [];
-    //   }
-    //   $scope.grains.push($scope.grain);
-    //   $scope.grain = {};
-    // }
-  }]);
-
-
   //controller for login screen - sends user/pass and stores jwt
-  app.controller('loginControl', ['$rootScope', '$scope', '$http', '$location', function($rootScope, $scope, $http, $location){
+  app.controller('loginControl', ['$scope', '$http', '$location', function($scope, $http, $location){
     $scope.userLogin = function() {
       $http({
         method: 'post',
@@ -209,7 +134,7 @@
       });
     }
   }]);
-  app.controller('headerControl', ['$rootScope', '$scope', 'jwtHelper', function($rootScope, $scope, jwtHelper){
+  app.controller('headerControl', ['$scope', 'jwtHelper', function($scope, jwtHelper){
     $scope.user = {};
 
     $scope.$watch(function(){
@@ -228,5 +153,19 @@
 
     $scope.logOut = function() {
       sessionStorage.removeItem('userToken');
-    }
+    };
+  }]);
+
+  app.controller('savedRecipes', ['$scope', '$http','recipeFunc', function($scope, $http, recipeFunc){
+    $scope.getSavedRecipes = function() {
+      $http({
+        method: 'post',
+        url: '/private/recipes/saved'
+      }).then(function(res){
+          $scope.recipes = res.data;
+          $scope.recipes.forEach(function(recipe, index){
+          $scope.recipes[index] = recipeFunc.calculateStats(recipe, recipeFunc);
+        })
+      })
+    };
   }]);

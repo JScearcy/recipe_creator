@@ -1,4 +1,4 @@
-// TODO Finish a method for creating/updating user and recipes.
+// TODO Finish a method for updating user and recipes.
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;

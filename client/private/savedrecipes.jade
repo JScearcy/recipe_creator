@@ -1,2 +1,21 @@
 .box.savedRecipes
-  md-button(ng-click="getSavedRecipes()" class="md-accent md-raised md-button") Get Saved Recipes
+  div(ng-controller="savedRecipes")
+    md-button(ng-click="getSavedRecipes()" class="md-accent md-raised md-button") Get Saved Recipes
+    md-tabs
+      md-tab(ng-repeat="recipe in recipes" label="{{recipe.name}}")
+        div
+          h2 {{recipe.name}}
+          ul Grains
+            li(ng-repeat="grain in recipe.grains.added track by $index") {{grain.weight + ' lbs ' + grain.name}}
+          ul Hops
+            li(ng-repeat="hop in recipe.hops.added track by $index") {{hop.weight + ' oz ' + hop.Name + " Time: " + hop.hopTime}}
+          ul Yeast 
+            li {{recipe.yeast.ID + ' ' + recipe.yeast.Name}} 
+          ul Stats
+            li OG: {{recipe.og}}
+            li FG: {{recipe.fg}}
+            li ABV: {{recipe.abv}}
+            li IBUs: {{recipe.hops.ibu}}
+            li Color(SRM Morey): {{recipe.srm}}
+            li Diastatic Power: {{recipe.dp}}
+    

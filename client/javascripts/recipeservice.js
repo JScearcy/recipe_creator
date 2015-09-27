@@ -55,7 +55,7 @@ app.service('recipeFunc', function(){
   };
   //this calculates the final gravity based on attenuation
   this.fg = function(grains, og, attenuation){
-    if(grains.length > 0) {
+    if(og > 0) {
       var yeastFood = Math.round(((og - 1) * 1000) * (attenuation / 100)) / 1000;
       yeastFood = og - yeastFood;
       if(yeastFood.toString().length > 5) {
@@ -100,5 +100,106 @@ app.service('recipeFunc', function(){
     } else {
       return 0;
     }
+  }
+  this.newGrain = function(grainObj) {
+    this.PPG = grainObj.PPG;
+    this.charandApps = grainObj.charandApps;
+    this.dp = grainObj.dp;
+    this.flavor = grainObj.flavor;
+    this.id = grainObj.id;
+    this.lovi = grainObj.lovi;
+    this.name = grainObj.name;
+    this.weight= grainObj.weight;
+  };
+  this.newHop = function(hopObj) {
+    this.Alpha_Acid = hopObj.Alpha_Acid;
+    this.Beta_Acid = hopObj.Beta_Acid;
+    this.Name = hopObj.Name;
+    this.Notes = hopObj.Notes;
+    this.Origin = hopObj.Origin;
+    this.Type = hopObj.Type;
+    this.hopTime = hopObj.hopTime;
+    this.hopType = hopObj.hopType;
+    this.weight = hopObj.weight;
+  };
+  this.recipe = function(scope, recipeFunc) {
+    this.efficiency = 65;
+    this.attenuation = 75;
+    this.volume = 5;
+    this.grains = {
+      added: []
+    };
+    this.hops = {
+      added: [],
+      ibu: function(){
+        return recipeFunc.ibu(scope.recipe.hops.added, scope.recipe.grains.added, scope.recipe.volume, scope.recipe.og());
+      }
+    };
+    this.og = function(){
+      return recipeFunc.efficiencyPPG(recipeFunc.totalPPG(scope.recipe.grains.added, scope.recipe.volume), scope.recipe.efficiency)
+    };
+    this.fg = function(){
+      return recipeFunc.fg(scope.recipe.grains.added, scope.recipe.og(), scope.recipe.attenuation)
+    };
+    this.abv = function() {
+        return recipeFunc.abv(scope.recipe.grains.added, scope.recipe.og(), scope.recipe.fg());
+      };
+    this.srm = function() {
+        return recipeFunc.srm(scope.recipe.grains.added, scope.recipe.volume);
+      };
+    this.dp = function() {
+        return recipeFunc.dp(scope.recipe.grains.added, recipeFunc.totalWeight(scope.recipe.grains.added));
+      };
+    this.notes = '';
+    this.recipeyeast =  scope.yeast;
+  };
+
+  this.calculateStats = function(recipe, recipeFunc) {
+    recipe.og = recipeFunc.efficiencyPPG(recipeFunc.totalPPG(recipe.grains.added, recipe.volume), recipe.efficiency);
+    recipe.fg = recipeFunc.fg(recipe.grains.added, recipe.og, recipe.attenuation);
+    recipe.abv = recipeFunc.abv(recipe.grains.added, recipe.og, recipe.fg);
+    recipe.srm = recipeFunc.srm(recipe.grains.added, recipe.volume);
+    recipe.dp = recipeFunc.dp(recipe.grains.added, recipeFunc.totalWeight(recipe.grains.added));
+    recipe.hops.ibu = recipeFunc.ibu(recipe.hops.added, recipe.grains.added, recipe.volume, recipe.og);
+    return recipe;
+  };
+  this.getItem = function(http, scope, item) {
+    http({
+      method: 'GET',
+      url: '/' + item
+    }).then(function(res) {
+      scope[item] = res.data;
+    });
+  };
+  this.saveRecipe = function(http, scope, recipeFunc) {
+    console.log('in service')
+    var recipe = {
+      username: scope.user.username,
+      name: scope.recipe.name,
+      grains: {
+        added: scope.recipe.grains.added
+      },
+      efficiency: scope.recipe.efficiency,
+      volume: scope.recipe.volume,
+      attenuation: scope.recipe.attenuation,
+      hops: {
+        added: scope.recipe.hops.added
+      },
+      notes: scope.notes,
+      yeast: scope.yeast
+    };
+    http({
+      method: 'post',
+      url: '/private/recipes',
+      data: recipe
+    }).then(function(res){
+      scope.recipe = new recipeFunc.recipe(scope, recipeFunc);
+    })
+  }
+});
+
+app.service('PpgCalc', function (){
+  this.calcPpg = function(dbfg) {
+    return (1000 * (1 + (dbfg / 100) * 0.04621)) / 1000
   }
 });

@@ -34,7 +34,7 @@ md-tabs(class="md-primary" md-dynamic-height md-border-bottom)
         //- GRAINS INPUT
   md-tab(label="Grains")
     div(class='box grains' layout="column")
-      md-content(layout-padding layout="row" layout-sm="column" layout-align="center")
+      form(name="grainsForm" layout-padding layout="row" layout-sm="column" layout-align="center")
         md-input-container(class="ingredient")
           label(for='grains') Grains
           md-select(name='grains' id='grains' ng-model='grain' required)
@@ -42,7 +42,7 @@ md-tabs(class="md-primary" md-dynamic-height md-border-bottom)
         md-input-container
           label(for='grainsWt') Weight(lbs.)
           input(type="number" ng-model="grain.weight" name="grainsWt" id="grainsWt")
-      md-button(class='md-raised md-primary ingredientBtn' ng-click='addIngredient("grains", "grain")' aria-label='Add Grains' ng-disabled='!grain || !grain.weight') Add Grains
+      md-button(class='md-raised md-primary ingredientBtn' ng-click='addIngredient(grain, "grains", "grain")' aria-label='Add Grains' ng-disabled='!grain || !grain.weight') Add Grains
       div(layout="row" layout-align="center")
         h2 {{grain.name}}
         ul(class="grainList" ng-show="grain.name")
@@ -65,7 +65,7 @@ md-tabs(class="md-primary" md-dynamic-height md-border-bottom)
       
   md-tab(label="Hops")   
     div(class="box hops" layout="column")
-      md-content(layout-padding layout="row" layout-sm="column" layout-align="center")
+      form(name="hopsForm" layout-padding layout="row" layout-sm="column" layout-align="center")
         md-input-container(class="ingredient")
           label(for='hops') Hops
           md-select(name='hops' id='hops' ng-model='hop' required)
@@ -88,7 +88,7 @@ md-tabs(class="md-primary" md-dynamic-height md-border-bottom)
           li AA%: {{hop.Alpha_Acid}}
           li Notes: {{hop.Notes}}
           li Origin: {{hop.Origin}}
-      md-button(class='ingredientBtn md-raised md-primary' ng-click='addIngredient("hops", "hop")' aria-label='Add Hops' ng-disabled="!hop || !hop.weight") Add Hops      
+      md-button(class='ingredientBtn md-raised md-primary' ng-click='addIngredient(hop, "hops", "hop")' aria-label='Add Hops' ng-disabled="!hop || !hop.weight") Add Hops      
       
       div(ng-show="recipe.hops.added.length > 0" layout="row"  layout-sm="column" layout-md="column"  class="tableMain" layout-align="center")
         div(ng-repeat="recipeHop in recipe.hops.added track by $index" layout="row" class="tableRow md-button" flex-gt-lg="20" flex-md="50" flex-lg="40" flex-sm="90")
