@@ -25,11 +25,11 @@ describe('recipe creation', function(){
     it('should not have a name on init', function(){
       expect(scope.recipe.name).to.equal(undefined);
     });
-    it('should add a grain to the recipe object', function(){
+    it('addIngredient should add a grain to the recipe object', function(){
       scope.addIngredient({name: '2-Row'}, 'grains', 'grain');
       expect(scope.recipe.grains.added.length).to.be.above(0);
     });
-    it('should add a hop to the recipe object', function(){
+    it('addIngredient should add a hop to the recipe object', function(){
       scope.addIngredient({name: 'Citra'}, 'hops', 'hop');
       expect(scope.recipe.hops.added.length).to.be.above(0);
     });
@@ -77,11 +77,113 @@ describe('recipe creation', function(){
     it('the recipe should have a diastatic power of 140', function(){
       expect(scope.recipe.dp()).to.equal(140);
     });
-    it('the recipe should have an IBU\'s number of 16.72', function(){
+    it('the recipe should have an IBU\'s number of 46.1', function(){
       expect(scope.recipe.hops.ibu(scope.recipe.hops.added,
                                    scope.recipe.grains.added,
                                    scope.recipe.volume,
                                    scope.recipe.og())).to.equal(46.1);
     });
   });
+});
+describe('loading a recipe from the server', function(){
+  var scope,
+      ctrl,
+      recipeFunc;
+
+  beforeEach(module('recipeCreator'));
+
+  beforeEach(inject(function($rootScope, $controller, _recipeFunc_){
+    scope = $rootScope.$new();
+    ctrl = $controller('savedRecipes', {$scope: scope});
+    recipeFunc = _recipeFunc_;
+    scope.recipes = [];
+  }));
+
+  it('should pull a recipe from the "server" and return the proper values', inject(function($http, $httpBackend){
+    scope.getSavedRecipes();
+
+    $httpBackend
+    .expect('POST', '/private/recipes/saved')
+    .respond(200, [{
+      name: 'testcipe',
+      efficiency: 65,
+      attenuation: 75,
+      volume: 5,
+      grains: {
+        added: [{
+          name: '2-Row (Brewer\'s Malt)',
+          id: 1,
+          lovi: 1.8,
+          dp:140,
+          PPG: 1.037,
+          weight: 10
+        }]
+      },
+      hops: {
+        added: [{
+          Name: 'Citra',
+          id: 1,
+          Alpha_Acid: 12,
+          hopTime: 60,
+          weight: 1,
+          hopType: 'boil'
+        }]
+      },
+      notes: '',
+      yeast: {}
+    }]);
+    $httpBackend.flush();
+    //test the values in the calculateStats function to verify correctness
+    expect(scope.recipes).to.be.ok;
+    expect(scope.recipes[0].grains).to.be.ok;
+    expect(scope.recipes[0].hops.added.length).to.be.above(0);
+    expect(scope.recipes[0].og).to.equal(1.048);
+    expect(scope.recipes[0].fg).to.equal(1.012);
+    expect(scope.recipes[0].dp).to.equal(140);
+    expect(scope.recipes[0].abv).to.equal(4.8);
+    expect(scope.recipes[0].srm).to.equal(3.59);
+  }));
+});
+describe('getting each item from the database', function(){
+  var scope,
+      ctrl,
+      recipeFunc;
+
+  beforeEach(module('recipeCreator'));
+
+  beforeEach(inject(function($rootScope, $controller, _recipeFunc_){
+    scope = $rootScope.$new();
+    ctrl = $controller('recipeMake', {$scope: scope});
+    recipeFunc = _recipeFunc_;
+  }));
+  it('should return a grains array of objects', inject(function($http, $httpBackend){
+    $httpBackend
+      .expect('GET', '/grains')
+      .respond(200, [{
+        name: '2-Row (Brewer\'s Malt)',
+        id: 1,
+        lovi: 1.8,
+        dp:140,
+        PPG: 1.037
+      }]);
+    $httpBackend
+      .expect('GET', '/hops')
+      .respond(200, [{
+        Name: 'Citra',
+        id: 1,
+        Alpha_Acid: 12
+      }])
+    $httpBackend
+      .expect('GET', '/yeasts')
+      .respond(200, [{
+        ID: 2112,
+        Name: 'California Lager',
+        charandApps: 'Tasty steam beers'
+      }])
+    $httpBackend.flush();
+
+    expect(scope.grains).to.be.ok;
+    expect(scope.hops).to.be.ok;
+    expect(scope.yeasts).to.be.ok;
+  }));
 });

@@ -164,8 +164,8 @@
       }).then(function(res){
           $scope.recipes = res.data;
           $scope.recipes.forEach(function(recipe, index){
-          $scope.recipes[index] = recipeFunc.calculateStats(recipe, recipeFunc);
-        })
+            $scope.recipes[index] = recipeFunc.calculateStats(recipe, recipeFunc);
+        });
       })
     };
   }]);

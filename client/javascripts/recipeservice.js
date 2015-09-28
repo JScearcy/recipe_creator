@@ -172,7 +172,6 @@ app.service('recipeFunc', function(){
     });
   };
   this.saveRecipe = function(http, scope, recipeFunc) {
-    console.log('in service')
     var recipe = {
       username: scope.user.username,
       name: scope.recipe.name,
