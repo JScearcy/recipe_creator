@@ -3,16 +3,18 @@
   md-content(layout-padding layout="row" layout-sm="column")
     md-input-container
       label(for='DBFG') DBFG
-      input(ng-model="dbfg" type="text" id="DBFG" name="DBFG")
+      input(ng-model="newItem.dbfg" type="text" id="DBFG" name="DBFG")
     md-input-container
       label(for='NewMaltIn') Name
-      input(ng-model="name" type="text" id="NewMaltIn" name="NewMaltIn")
-
-  md-button(class="md-primary" id="subBut" ng-click="addgrain()") Calculate
+      input(ng-model="newItem.name" type="text" id="NewMaltIn" name="NewMaltIn")
+    
+  md-button(class="md-primary" id="subBut" ng-click="addGrain()") Calculate
   md-button(class="md-warn" id="clear" onclick="clearAll()") Clear All
+  
   md-grid-list(
     md-cols-sm="1" md-cols-md="2" md-cols-gt-md="6"
     md-row-height-gt-md="1:1" md-row-height="4:3"
     md-gutter="8px" md-gutter-gt-sm="4px")
-    md-grid-tile(md-rowspan='1' md-colspan='2' md-colspan-sm="1" ng-show='addedHops' ng-repeat="grain in grains track by $index")
-     h2(ng-show="grain.name") {{grain.name}}
+    md-grid-tile(md-rowspan='1' md-colspan='2' md-colspan-sm="1" ng-show='ppgItems.length > 0' ng-repeat="ppgItem in ppgItems track by $index")
+     p {{ppgItem.name}}
+     p {{ppgItem.ppg}}

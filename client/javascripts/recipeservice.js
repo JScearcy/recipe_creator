@@ -1,5 +1,5 @@
 app.service('recipeFunc', function(){
-  //this calculates the weight of all grains added
+  //in unit test this calculates the weight of all grains added
   this.totalWeight = function(ingredients){
     var total = 0;
     ingredients.forEach(function(ingredient){
@@ -9,7 +9,7 @@ app.service('recipeFunc', function(){
     });
     return total;
   };
-  //this calculates the max sugar extraction possible from the grains
+  //in unit test - this calculates the max sugar extraction possible from the grains
   this.totalPPG = function(grains, volume){
     var total = 0;
     grains.forEach(function(grain, index){
@@ -17,7 +17,7 @@ app.service('recipeFunc', function(){
     });
     return total;
   };
-  //this calculates the estimated sugar extraction based on user's eff. input
+  //in unit test this calculates the estimated sugar extraction based on user's eff. input
   this.efficiencyPPG = function(totalPPG, efficiency) {
     if(totalPPG === 0){
       return 0;
@@ -32,7 +32,7 @@ app.service('recipeFunc', function(){
         return effPPG;
       }
   };
-  //calculates ibu's for user's input hops
+  //in unit test - calculates ibu's for user's input hops
   this.ibu = function(hops, grains, volume, og) {
     if(hops.length > 0 && grains.length > 0) {
       var ibu = 0;
@@ -40,11 +40,11 @@ app.service('recipeFunc', function(){
       var bigFact = 1.65 * Math.pow(0.000125, (og - 1));
       hops.forEach(function(hop) {
         aau = hop.weight * (hop.Alpha_Acid / 100) * 7490 / volume;
-        if(hop.hopType == 'boil') {
+        if(hop.hopType == 'Boil') {
           var boilTFact = ((1 - Math.pow(2.71828182845904523536, (-.04 * hop.hopTime))) / 3.8);
           var util = bigFact * boilTFact;
           ibu += util * aau;
-        } else if(hop.hopType == 'whirlpool') {
+        } else if(hop.hopType == 'Whirlpool') {
           var util = .10;
           ibu += util * aau
         }
@@ -53,7 +53,7 @@ app.service('recipeFunc', function(){
     }
     return 0;
   };
-  //this calculates the final gravity based on attenuation
+  //in unit test - this calculates the final gravity based on attenuation
   this.fg = function(grains, og, attenuation){
     if(og > 0) {
       var yeastFood = Math.round(((og - 1) * 1000) * (attenuation / 100)) / 1000;
@@ -66,7 +66,7 @@ app.service('recipeFunc', function(){
     return 0
     }
   };
-      //estimate color based on grains added
+      //in unit test - estimate color based on grains added
   this.srm = function(grains, volume){
     if(grains.length > 0) {
       var totalColor = 0;
@@ -83,6 +83,7 @@ app.service('recipeFunc', function(){
         return 0;
       }
     };
+    //in unit test - calc abv %
   this.abv = function(grains, og, fg){
     if(grains.length > 0) {
       return Math.round((76.08 * (og-fg) / (1.775 - og)) * (fg / 0.794) * 100) / 100;
@@ -90,6 +91,7 @@ app.service('recipeFunc', function(){
       return 0
     }
   };
+  //in unit test - calculate diastatic power
   this.dp = function(grains, totalWeight){
     if(grains.length > 0) {
       var totaldp = 0;
@@ -101,6 +103,7 @@ app.service('recipeFunc', function(){
       return 0;
     }
   }
+  //in unit test - constructor for new grain item
   this.newGrain = function(grainObj) {
     this.PPG = grainObj.PPG;
     this.charandApps = grainObj.charandApps;
@@ -111,6 +114,7 @@ app.service('recipeFunc', function(){
     this.name = grainObj.name;
     this.weight= grainObj.weight;
   };
+  //in unit test - constructor for new hop item
   this.newHop = function(hopObj) {
     this.Alpha_Acid = hopObj.Alpha_Acid;
     this.Beta_Acid = hopObj.Beta_Acid;
@@ -122,6 +126,7 @@ app.service('recipeFunc', function(){
     this.hopType = hopObj.hopType;
     this.weight = hopObj.weight;
   };
+  //in unit test - constructor for a blank recipe
   this.recipe = function(scope, recipeFunc) {
     this.efficiency = 65;
     this.attenuation = 75;
@@ -153,7 +158,7 @@ app.service('recipeFunc', function(){
     this.notes = '';
     this.recipeyeast =  scope.yeast;
   };
-
+//in unit test - this calculates stats for each saved recipe
   this.calculateStats = function(recipe, recipeFunc) {
     recipe.og = recipeFunc.efficiencyPPG(recipeFunc.totalPPG(recipe.grains.added, recipe.volume), recipe.efficiency);
     recipe.fg = recipeFunc.fg(recipe.grains.added, recipe.og, recipe.attenuation);
@@ -163,6 +168,7 @@ app.service('recipeFunc', function(){
     recipe.hops.ibu = recipeFunc.ibu(recipe.hops.added, recipe.grains.added, recipe.volume, recipe.og);
     return recipe;
   };
+//in unit tests - this gets an item from the sqlite db
   this.getItem = function(http, scope, item) {
     http({
       method: 'GET',
@@ -171,6 +177,7 @@ app.service('recipeFunc', function(){
       scope[item] = res.data;
     });
   };
+//in unit test - saves recipe to database with a tie to the user
   this.saveRecipe = function(http, scope, recipeFunc) {
     var recipe = {
       username: scope.user.username,
@@ -193,12 +200,63 @@ app.service('recipeFunc', function(){
       data: recipe
     }).then(function(res){
       scope.recipe = new recipeFunc.recipe(scope, recipeFunc);
+      scope.notes = '';
+      scope.yeast = {};
+    })
+  };
+//in unit test - reset scope.recipe values
+  this.clearCurrentRecipe = function(scope, recipeFunc){
+    scope.recipe = new recipeFunc.recipe(scope, recipeFunc);
+    scope.notes = '';
+    scope.yeast = {};
+  };
+//in unit test - replace scope.recipe with a selected recipe's values
+  this.editRecipe = function(savedrecipe, scope, recipeFunc) {
+    scope.recipe.name = savedrecipe.name;
+    scope.recipe.efficiency = savedrecipe.efficiency;
+    scope.recipe.attenuation = savedrecipe.attenuation;
+    scope.recipe.volume = savedrecipe.volume;
+    scope.recipe.grains.added = savedrecipe.grains.added;
+    scope.recipe.hops.added = savedrecipe.hops.added;
+    scope.notes = savedrecipe.notes;
+    scope.yeast = savedrecipe.yeast;
+    scope.selectedIndex = 0;
+  };
+//in unit test - remove recipe from db by username
+  this.deleteRecipe = function(id, http, callback){
+    http({
+      method: 'delete',
+      data: {id: id},
+      url: '/private/recipes/delete/',
+      headers: {"Content-Type": "application/json;charset=utf-8"}
+    }).then(function(res){
+      callback(res);
+    })
+  };
+
+//in unit test - this will grab ll saved recipes by username that is in the database
+  this.getSavedRecipes = function(scope, http, recipeFunc) {
+    http({
+      method: 'post',
+      url: '/private/recipes/saved'
+    }).then(function(res){
+        scope.recipes = res.data;
+        scope.recipes.forEach(function(recipe, index){
+          scope.recipes[index] = recipeFunc.calculateStats(recipe, recipeFunc);
+      });
     })
   }
 });
 
+//in unit test - this will calculate a ppg based on the DBFG from a datasheet
 app.service('PpgCalc', function (){
   this.calcPpg = function(dbfg) {
     return (1000 * (1 + (dbfg / 100) * 0.04621)) / 1000
+  };
+  this.addGrain = function(newItem, PpgCalc) {
+    console.log('clicked ', newItem);
+
+    newItem.ppg = PpgCalc.calcPpg(newItem.dbfg);
+    return newItem;
   }
 });

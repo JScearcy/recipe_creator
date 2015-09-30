@@ -17,6 +17,7 @@ var register = require('./routes/register');
 var login = require('./routes/login');
 var recipes = require('./routes/auth/recipes');
 var catchall = require('./routes/catchall');
+var unwanted = require('./routes/unwanted');
 
 var app = express();
 
@@ -59,6 +60,7 @@ app.use('/hops', hops);
 app.use('/yeasts', yeasts);
 app.use('/register', register);
 app.use('/loginauth', login);
+app.use('/administrator/*', unwanted);
 app.use('/*', catchall);
 
 // catch 404 and forward to error handler

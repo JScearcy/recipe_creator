@@ -88,15 +88,25 @@ gulp.task('process-private-views', function(){
 gulp.task('production', ['move-public',
                          'move-models',
                          'move-routes',
+                         'move-custom-modules',
                          'move-views',
                          'move-appjs',
                          'move-packagejson',
                          'move-images',
-                         'move-bin'],
+                         'move-bin',
+                         'move-private',
+                         'move-auth'],
                          function(){
-                           gutil.log('gulp moved public')
+                           gutil.log('gulp moved to production')
                          })
-
+gulp.task('move-private', function(){
+  return gulp.src('./private/**/*')
+  .pipe(gulp.dest('../production/private'));
+});
+gulp.task('move-custom-modules', function(){
+  return gulp.src('./custom_modules/*')
+  .pipe(gulp.dest('../production/custom_modules'));
+});
 gulp.task('move-public', function(){
   return gulp.src('./public/**/*')
   .pipe(gulp.dest('../production/public'));
@@ -109,12 +119,16 @@ gulp.task('move-routes', function(){
   return gulp.src('./routes/*')
   .pipe(gulp.dest('../production/routes'));
 });
+gulp.task('move-auth', function(){
+  return gulp.src('./routes/auth/*')
+  .pipe(gulp.dest('../production/routes/auth'));
+});
 gulp.task('move-views', function(){
   return gulp.src('./views/*')
   .pipe(gulp.dest('../production/views'));
 });
 gulp.task('move-appjs', function(){
-  return gulp.src('app.js')
+  return gulp.src('app.*')
   .pipe(gulp.dest('../production'));
 });
 gulp.task('move-packagejson', function(){

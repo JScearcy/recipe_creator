@@ -23,6 +23,10 @@ customValidators = {
       };
     });
     return true;
+  },
+  isObjectId: function(value) {
+    var objectIdRegEx = /^[a-fA-F0-9]{24}$/;
+    return objectIdRegEx.test(value);
   }
 };
 

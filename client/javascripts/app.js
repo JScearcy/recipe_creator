@@ -62,8 +62,10 @@
     //The object used for recipe creation as well as calculations
     $scope.recipe = new recipeFunc.recipe($scope, recipeFunc);
 
-    //Save function for button ng-click
-    $scope.saveRecipe = function(){ return recipeFunc.saveRecipe($http, $scope, recipeFunc)};
+    //Save/clear/edit function for button ng-click
+    $scope.clearCurrentRecipe = function(){ return new recipeFunc.clearCurrentRecipe($scope, recipeFunc) };
+    $scope.saveRecipe = function(){ return recipeFunc.saveRecipe($http, $scope, recipeFunc) };
+    $scope.editRecipe = function(recipe) { return recipeFunc.editRecipe(recipe, $scope, recipeFunc) }
 
     //generic function to add an item to the array for those ingredients
     $scope.addIngredient = function(ingredient, type, model){
@@ -75,7 +77,7 @@
           var addedIngredient = new recipeFunc.newHop(ingredient);
           break;
         default:
-          var addedIngredient = {};
+          return;
       };
       $scope.recipe[type].added.push(addedIngredient);
       $scope[model] = {};
@@ -97,6 +99,7 @@
         $scope.user.recipetemplate = '/views/notloggedin.html'
       }
     });
+
   }]);
   //controller for login screen - sends user/pass and stores jwt
   app.controller('loginControl', ['$scope', '$http', '$location', function($scope, $http, $location){
@@ -157,15 +160,15 @@
   }]);
 
   app.controller('savedRecipes', ['$scope', '$http','recipeFunc', function($scope, $http, recipeFunc){
-    $scope.getSavedRecipes = function() {
-      $http({
-        method: 'post',
-        url: '/private/recipes/saved'
-      }).then(function(res){
-          $scope.recipes = res.data;
-          $scope.recipes.forEach(function(recipe, index){
-            $scope.recipes[index] = recipeFunc.calculateStats(recipe, recipeFunc);
-        });
-      })
+    $scope.deleteRecipe = function(recipe) {
+      recipeFunc.deleteRecipe(recipe._id, $http, function(res){
+        $scope.getSavedRecipes();
+      });
     };
+    $scope.getSavedRecipes = function() { return recipeFunc.getSavedRecipes($scope, $http, recipeFunc) };
+  }]);
+  app.controller('dbsgCalc', ['$scope', 'PpgCalc', function($scope, PpgCalc){
+    console.log('Controller set');
+    $scope.ppgItems = [];
+    $scope.addGrain = function() { return $scope.ppgItems.push(PpgCalc.addGrain($scope.newItem, PpgCalc)) };
   }]);

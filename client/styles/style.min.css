@@ -55,7 +55,7 @@ md-tabs.md-primary > md-tabs-wrapper > md-tabs-canvas > md-pagination-wrapper > 
   padding: 0;
 }
 .grainItem {
-  margin: 5px auto;
+  margin: 0 auto;
 }
 .grainWtChngIn {
   margin: 0 auto;
@@ -99,4 +99,13 @@ md-tabs.md-primary > md-tabs-wrapper > md-tabs-canvas > md-pagination-wrapper > 
 .warningType {
   margin: 0;
   line-height: 12px;
+}
+.currentRecipe {
+  background-color: #AAA;
+}
+.removeMargin {
+  margin: 0;
+}
+.removePadding {
+  padding: 0;
 }

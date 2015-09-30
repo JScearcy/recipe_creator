@@ -7,7 +7,6 @@ var recipeValidation = function(req){
   req.checkBody('volume', 'Invalid Volume').isNumeric();
   req.checkBody('attenuation', 'Invalid Attenuation').isNumeric();
   req.checkBody('hops.added', 'Invalid Hops').isIngredient();
-  console.log('Validating..');
   var errors = req.validationErrors();
   return errors;
 }
