@@ -56,7 +56,7 @@ gulp.task('process-angular-material-js', function(){
 });
 gulp.task('process-angular-material-css', function(){
   return gulp.src('./node_modules/angular-material/angular-material.min.css')
-  .pipe(gulp.dest('./public/vendors/angularcss'))
+  .pipe(gulp.dest('./public/vendors/angularcss'));
 });
 gulp.task('process-angular-aria', function(){
   return gulp.src('./node_modules/angular-aria/angular-aria.min.*')

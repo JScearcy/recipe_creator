@@ -172,7 +172,6 @@
   app.controller('dbsgCalc', ['$scope', 'PpgCalc', function($scope, PpgCalc){
     $scope.ppgItems = [];
     $scope.clearAll = function() {
-      console.log('button clicked')
       $scope.ppgItems = [];
     };
     $scope.addGrain = function() {

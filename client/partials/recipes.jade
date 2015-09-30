@@ -42,7 +42,7 @@ md-tabs(class="md-primary" md-selected="selectedIndex" md-dynamic-height md-bord
             md-option(ng-repeat='grain in grains | orderBy: "name"' ng-value="{{grain}}") {{grain.name}}
         md-input-container
           label(for='grainsWt') Weight(lbs.)
-          input(type="number" ng-model="grain.weight" name="grainsWt" id="grainsWt" aria-label="Input weight of grains")
+          input(type="number" min="0" ng-model="grain.weight" name="grainsWt" id="grainsWt" aria-label="Input weight of grains")
       md-button(class='md-raised md-primary ingredientBtn' ng-click='addIngredient(grain, "grains", "grain")' ng-disabled='!grain || !grain.weight' aria-label="Add grain to list") Add Grains
       div(layout="row" layout-align="center")
         h2 {{grain.name}}
@@ -57,7 +57,7 @@ md-tabs(class="md-primary" md-selected="selectedIndex" md-dynamic-height md-bord
             p(class="removeMargin") {{recipegrain.name}}
             md-input-container(class="removePadding")
               label(for="grainWtChng") Weight(lbs)
-              input(flex type="number" class="grainWtChngIn" name="grainWtChng" id="grainWtChng" ng-model='recipegrain.weight' ng-value="{{recipegrain.weight}}" aria-label="Change weight of grains")
+              input(flex type="number" min="0" class="grainWtChngIn" name="grainWtChng" id="grainWtChng" ng-model='recipegrain.weight' ng-value="{{recipegrain.weight}}" aria-label="Change weight of grains")
             md-button(class="md-raised md-warn" ng-click="deleteItem($index, 'grains')") Remove
       md-button(ng-show="user.username" class="md-primary md-button ingredientBtn" ng-click="saveRecipe()" aria-label="Save recipe") Save Recipe
       md-button(class="md-warn md-button" ng-click="clearCurrentRecipe()" aria-label="clear recipe") Clear Recipe
@@ -71,7 +71,7 @@ md-tabs(class="md-primary" md-selected="selectedIndex" md-dynamic-height md-bord
             md-option(ng-repeat='hop in hops' ng-value='{{hop}}') {{hop.Name}}  
         md-input-container
           label(for='hopsWt') Weight(oz)
-          input(type="number" ng-model="hop.weight" name="hopsWt" id="hopsWt" aria-label="Select weight of hops in ounces")
+          input(type="number" min="0" ng-model="hop.weight" name="hopsWt" id="hopsWt" aria-label="Select weight of hops in ounces")
         md-input-container
           label(for='hopType') Type
           md-select(ng-model='hop.hopType' name='hopType' id='hopType' required aria-label="Select type of hops utilization")
@@ -80,7 +80,7 @@ md-tabs(class="md-primary" md-selected="selectedIndex" md-dynamic-height md-bord
             md-option(value="Dryhop") Dry Hop 
         md-input-container
           label(for="time") Time
-          input(type="number" min="1" ng-model="hop.hopTime" name="time" id="time" aria-label="Select amount of time")
+          input(type="number" min="0" ng-model="hop.hopTime" name="time" id="time" aria-label="Select amount of time")
         md-input-container
           label(for="timeunit") Unit
           md-select(ng-model='hop.hopTimeUnit' name="timeunit" id="timeunit" ng-init aria-label="Select time units")
@@ -100,7 +100,7 @@ md-tabs(class="md-primary" md-selected="selectedIndex" md-dynamic-height md-bord
             p(class="removeMargin") {{recipeHop.Name}}
             md-input-container(class="removePadding")
               label(for="hopWtChng") Weight(oz)
-              input(flex type="number" class="grainWtChngIn" name="hopWtChng" id="hopWtChng" ng-model='recipeHop.weight' ng-value="{{recipeHop.weight}}" aria-label="Change hops weight")
+              input(flex type="number" min="0" class="grainWtChngIn" name="hopWtChng" id="hopWtChng" ng-model='recipeHop.weight' ng-value="{{recipeHop.weight}}" aria-label="Change hops weight")
             ul(class="gridList" layout="row")
               li(class="hopItem") AA%: {{recipeHop.Alpha_Acid}}
               li(class="hopItem") Type: {{recipeHop.hopType}}

@@ -109,3 +109,9 @@ md-tabs.md-primary > md-tabs-wrapper > md-tabs-canvas > md-pagination-wrapper > 
 .removePadding {
   padding: 0;
 }
+.dbfgCalculate {
+  text-align: center;
+}
+.ppgListItems {
+  width: 90%;
+}

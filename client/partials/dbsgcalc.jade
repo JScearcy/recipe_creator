@@ -1,23 +1,25 @@
-div(class='dbfgCalculate' layout="row" layout-align="center center")
-  div(layout="column" layout-padding)
-    h1 DbFG to PPG calculator
-    form
-      md-content(layout-padding layout="row" layout-sm="column")
-        md-input-container
-          label(for='DBFG') DBFG
-          input(ng-model="newItem.dbfg" type="number" id="DBFG" name="DBFG")
-        md-input-container
-          label(for='NewMaltIn') Name
-          input(ng-model="newItem.name" type="text" id="NewMaltIn" name="NewMaltIn")
-      input(class="md-button md-primary" type='submit' id="subBut" ng-click="addGrain()" value="Calculate")
-      md-button(class="md-warn" id="clear" ng-click="clearAll()") Clear All
+div(class='dbfgCalculate')
+    .inputGrain
+      h1 DbFG to PPG calculator
+      form
+        md-content(layout-padding layout="row" layout-sm="column" layout-align="center center")
+          md-input-container
+            label(for='DBFG') DBFG
+            input(ng-model="newItem.dbfg" type="number" id="DBFG" name="DBFG")
+          md-input-container
+            label(for='NewMaltIn') Name
+            input(ng-model="newItem.name" type="text" id="NewMaltIn" name="NewMaltIn")
+        input(class="md-button md-primary" type='submit' id="subBut" ng-click="addGrain()" value="Calculate")
+        md-button(class="md-warn" id="clear" ng-click="clearAll()") Clear All
     
-    md-grid-list(
-      md-cols-sm="1" md-cols-md="2" md-cols-gt-md="6"
-      md-row-height-gt-md="1:1" md-row-height="4:3"
-      md-gutter="8px" md-gutter-gt-sm="4px")
-      md-grid-tile(md-rowspan='1' md-colspan='1' md-colspan-sm="1" ng-show='ppgItems.length > 0' ng-repeat="ppgItem in ppgItems track by $index")
-        div(class="md-list-item-text")
-          h3 {{ppgItem.name}}
-          p PPG: {{ppgItem.ppg}}
-          p DBFG: {{ppgItem.dbfg}}
+    .ppgListItems
+      md-grid-list(
+        md-cols-sm="2" md-cols-md="4" md-cols-gt-md="6" md-cols-gt-lg="8"
+        md-row-height="3:4"
+        md-gutter="8px" md-gutter-gt-sm="4px")
+        md-grid-tile(class="md-primary" md-rowspan='1' md-colspan='1' md-colspan-sm="1" ng-show='ppgItems.length > 0' ng-repeat="ppgItem in ppgItems track by $index")
+          div(class='dbfgCalculate')
+            md-grid-tile-header
+              h2 {{ppgItem.name}} 
+            p PPG: {{ppgItem.ppg}}
+            p DBFG: {{ppgItem.dbfg}}
