@@ -1,5 +1,40 @@
-//TODO finish going through recipeservice.js to test each function.
 
+describe('the header functions', function(){
+  var scope;
+  var control;
+  beforeEach(module('recipeCreator'));
+
+  beforeEach(inject(function($rootScope, $controller){
+    scope = $rootScope.$new();
+    ctrl = $controller('headerControl', {$scope: scope});
+    var sessionStorage = {
+      items: {},
+      getItem: function(key){
+        return items[key];
+      },
+      setItem: function(key, value) {
+        items[key] = value;
+      },
+      clear: function(){
+        sessionStorage.items = {};
+      }
+    };
+  }));
+  it('should check sessionStorage and first return a user and the proper vars and then return defaults', function(){
+    var jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE0NDM2MjcxNzAsImV4cCI6MTQ3NTE2MzE3MCwiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoianJvY2tldEBleGFtcGxlLmNvbSIsInVzZXJuYW1lIjoidGVzdFVzZXIifQ.Zj_l6H6PiADIhhVK7LlWmRIFlKeI2c7NplRclE2d26o'
+    expect(scope.user).to.be.ok;
+    sessionStorage.setItem('userToken', jwt);
+    scope.$digest();
+    expect(scope.user.username).to.equal('testUser');
+    expect(scope.user.login).to.equal('Logout testUser');
+    sessionStorage.clear();
+    scope.$digest();
+    expect(scope.user.login).to.equal('Login/Register');
+  });
+  it('should return the url being visited', function(){
+    expect(scope.goToPage('/testpage')).to.equal('/testpage');
+  });
+});
 //main page - the recipe creator
 describe('recipe creation', function(){
   //reset the vars
@@ -345,32 +380,7 @@ describe('getting each item from the database', function(){
     expect(scope.yeasts[0].Name).to.equal('California Lager');
   }));
 });
-describe('PpgCalc service test', function(){
-  var scope;
-  var ctrl;
 
-  beforeEach(module('recipeCreator'));
-
-  beforeEach(inject(function($rootScope, $controller, _PpgCalc_){
-    scope = $rootScope.$new();
-    ctrl = $controller('dbsgCalc', {$scope: scope});
-    PpgCalc = _PpgCalc_;
-  }));
-  it('should return a value of 1.0374301 when 81 is input as the param', function(){
-    expect(PpgCalc.calcPpg(81)).to.equal(1.0374301);
-  });
-  it('should push a new item into scope.ppgItems with a new key of "ppg"', function(){
-    scope.newItem = {
-      name: 'test',
-      dbfg: 81
-    };
-    scope.ppgItems = [];
-    scope.addGrain(scope.newItem, PpgCalc);
-    expect(scope.newItem.name).to.equal('test');
-    expect(scope.newItem.dbfg).to.equal(81);
-    expect(scope.newItem.ppg).to.equal(1.0374301);
-  })
-});
 describe('registration process', function(){
   var scope;
   var ctrl;
@@ -403,4 +413,41 @@ describe('registration process', function(){
     expect(scope.user.username).to.equal(undefined);
     expect(scope.user).to.equal('Failure...');
   }));
+});
+
+describe('PpgCalc test', function(){
+  var scope;
+  var ctrl;
+
+  beforeEach(module('recipeCreator'));
+
+  beforeEach(inject(function($rootScope, $controller, _PpgCalc_){
+    scope = $rootScope.$new();
+    ctrl = $controller('dbsgCalc', {$scope: scope});
+    PpgCalc = _PpgCalc_;
+  }));
+  it('should return a value of 1.037 when 81 is input as the param and 1 if the input is NaN', function(){
+    expect(PpgCalc.calcPpg(81)).to.equal('1.037');
+    expect(PpgCalc.calcPpg('j')).to.equal('1');
+  });
+  it('should push a new item into scope.ppgItems with a new key of "ppg"', function(){
+    scope.newItem = {
+      name: 'test',
+      dbfg: 81
+    };
+    scope.ppgItems = [];
+    scope.addGrain(scope.newItem, PpgCalc);
+    expect(scope.newItem.name).to.not.be.ok;
+    expect(scope.newItem.dbfg).to.not.be.ok;
+    expect(scope.ppgItems[0].name).to.equal('test');
+    expect(scope.ppgItems[0].dbfg).to.equal(81);
+    expect(scope.ppgItems[0].ppg).to.equal('1.037');
+  });
+  it('clearAll should take the list of ppgItems calculated and return no items', function(){
+    scope.ppgItems.push({name: 'test1'});
+    scope.ppgItems.push({name: 'test2'});
+    expect(scope.ppgItems.length).to.equal(2);
+    scope.clearAll();
+    expect(scope.ppgItems.length).to.equal(0);
+  });
 });

@@ -10,7 +10,7 @@ block content
         md-button(class="md-toolbar-tools md-button md-default-theme" ng-click="$mdOpenMenu()" layout-align="center center" aria-label="Open calculators menu") Calculate
         md-menu-content
           md-menu-item
-            md-button(class="md-toolbar-tools md-button md-default-theme" href='/dbsg_calc') Calc SG from DBFG
+            md-button(class="md-toolbar-tools md-button md-default-theme" ng-click="goToPage('/dbsg_calc')" href='/dbsg_calc') Calc SG from DBFG
       div(class="md-toolbar-tools" flex)
         a(layout-align="center center" class="md-toolbar-tools md-button md-default-theme" href="mailto:jacobscearcy@gmail.com") Contact
         span(class="takespace")

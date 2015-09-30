@@ -139,7 +139,9 @@
   }]);
   app.controller('headerControl', ['$scope', 'jwtHelper', function($scope, jwtHelper){
     $scope.user = {};
-
+    $scope.goToPage = function(url) {
+      return url;
+    }
     $scope.$watch(function(){
       return sessionStorage.getItem('userToken');
     }, function(){
@@ -168,7 +170,13 @@
     $scope.getSavedRecipes = function() { return recipeFunc.getSavedRecipes($scope, $http, recipeFunc) };
   }]);
   app.controller('dbsgCalc', ['$scope', 'PpgCalc', function($scope, PpgCalc){
-    console.log('Controller set');
     $scope.ppgItems = [];
-    $scope.addGrain = function() { return $scope.ppgItems.push(PpgCalc.addGrain($scope.newItem, PpgCalc)) };
+    $scope.clearAll = function() {
+      console.log('button clicked')
+      $scope.ppgItems = [];
+    };
+    $scope.addGrain = function() {
+      $scope.ppgItems.push(new PpgCalc.newItem($scope.newItem, PpgCalc));
+      $scope.newItem = {};
+    };
   }]);
