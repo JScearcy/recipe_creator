@@ -8,9 +8,11 @@ block content
         a(class="md-toolbar-tools md-button md-default-theme" href="/" layout-align="center center") Home
       md-menu(flex)
         md-button(class="md-toolbar-tools md-button md-default-theme" ng-click="$mdOpenMenu()" layout-align="center center" aria-label="Open calculators menu") Calculate
-        md-menu-content
+        md-menu-content(layout-align="center center" direction="down" cascade="true")
           md-menu-item
             md-button(class="md-toolbar-tools md-button md-default-theme" ng-click="goToPage('/dbsg_calc')" href='/dbsg_calc') Calc SG from DBFG
+          md-menu-item
+            md-button(class="md-toolbar-tools md-butoon md-default-theme" ng-click="goToPage('/')" href="/") Another Calc Here
       div(class="md-toolbar-tools" flex)
         a(layout-align="center center" class="md-toolbar-tools md-button md-default-theme" href="mailto:jacobscearcy@gmail.com") Contact
         span(class="takespace")

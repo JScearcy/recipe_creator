@@ -23,7 +23,7 @@ module.exports = function(config) {
       'node_modules/angular-material/angular-material.js',
       'node_modules/angular-mocks/angular-mocks.js',
       'client/javascripts/*.js',
-      'test/getting_ingredients_list.js',
+      'test/getting_ingredients_list_test.js',
       'test/header_control_test.js',
       'test/ppg_calc_test.js',
       'test/recipe_creator_test.js',

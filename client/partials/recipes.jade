@@ -22,7 +22,7 @@ md-tabs(class="md-primary" md-selected="selectedIndex" md-dynamic-height md-bord
       form(layout="row" layout-sm="column" class="configInput" layout-align="center center" name="customizeForm")
         md-input-container(flex)
           label(for="volume") Volume(gal)
-          input(type="number" min="1" ng-pattern="/^[0-9]+$/" ng-model="recipe.volume" name="volume" id="volume" aria-label="Input volume in gallons")
+          input(type="number" min="1" max="100" ng-pattern="/^[0-9]+$/" ng-model="recipe.volume" name="volume" id="volume" aria-label="Input volume in gallons")
         md-input-container(flex)
           label(for="efficiency") Efficiency
           input(type="number" min="1" max="100" ng-pattern="/^[0-9]+$/" ng-model="recipe.efficiency" name="efficiency" id="efficiency" aria-label="Input efficiency percent")
@@ -74,7 +74,7 @@ md-tabs(class="md-primary" md-selected="selectedIndex" md-dynamic-height md-bord
           input(type="number" min="0" ng-model="hop.weight" name="hopsWt" id="hopsWt" aria-label="Select weight of hops in ounces")
         md-input-container
           label(for='hopType') Type
-          md-select(ng-model='hop.hopType' name='hopType' id='hopType' required aria-label="Select type of hops utilization")
+          md-select(ng-model='hop.hopType' name='hopType' id='hopType' aria-label="Select type of hops utilization")
             md-option(value="Boil") Boil
             md-option(value="Whirlpool") Whirlpool
             md-option(value="Dryhop") Dry Hop 
