@@ -33,12 +33,10 @@ describe('recipe creation', function(){
       expect(scope.recipe.hops.added.length).to.be.above(0);
     });
     it('addIngredient should not throw an error, or take any action', function(){
-
-      expect(scope.addIngredient()).to.not.be.ok;
-    })
+      expect(scope.addIngredient('', '', '')).to.be.empty;
+    });
   });
 
-  //still the recipe creator
   describe('when a grain and hop are added with the default volume', function(){
     var scope;
     var ctrl;

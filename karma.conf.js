@@ -1,5 +1,5 @@
 // Karma configuration
-// Generated on Sat Sep 26 2015 23:10:59 GMT-0500 (CDT)
+// Generated on Thu Oct 01 2015 09:46:09 GMT-0500 (CDT)
 
 module.exports = function(config) {
   config.set({
@@ -10,7 +10,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'sinon-chai', 'chai-as-promised', 'chai'],
+    frameworks: ['mocha', 'chai', 'sinon-chai'],
 
 
     // list of files / patterns to load in the browser
@@ -22,13 +22,8 @@ module.exports = function(config) {
       'node_modules/angular-aria/angular-aria.js',
       'node_modules/angular-material/angular-material.js',
       'node_modules/angular-mocks/angular-mocks.js',
-      'client/javascripts/*.js',
-      'test/getting_ingredients_list_test.js',
-      'test/header_control_test.js',
-      'test/ppg_calc_test.js',
-      'test/recipe_creator_test.js',
-      'test/recipe_fromServer_test.js',
-      'test/registration_process_test.js'
+      './client/javascripts/*.js',
+      './test/*.js'
     ],
 
 
@@ -47,16 +42,16 @@ module.exports = function(config) {
       type: 'text-summary',
       dir: 'coverage/'
     },
-
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['hy-html', 'progress', 'coverage'],
+    reporters: ['progress', 'coverage', 'hy-html'],
     htmlAngularReport:{
       outputFile: 'angularReport.html',
       reportFolder: 'test',
       reportTitle: 'Recipe Tests'
     },
+
 
     // web server port
     port: 9876,
