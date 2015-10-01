@@ -114,4 +114,5 @@ md-tabs.md-primary > md-tabs-wrapper > md-tabs-canvas > md-pagination-wrapper > 
 }
 .ppgListItems {
   width: 90%;
+  margin: 5px auto;
 }
