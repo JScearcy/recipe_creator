@@ -13,7 +13,7 @@ md-tabs(class="md-primary" md-selected="selectedIndex" md-dynamic-height md-bord
   md-tab(label="Recipe Config")
     md-content(layoutpadding layout="column" layout-sm="column" layout-align="center center")
       md-input-container(class="configInput")
-        form(flex name="recipeName")
+        form(flex name="recipeName" class="nameForm")
           label(for="name") Enter Recipe Name
           input(type="text" ng-pattern="/^[a-zA-Z0-9 _.']*[a-zA-Z0-9 _.'][a-zA-Z0-9 _.']*$/" ng-model="recipe.name" name="name" id="name" aria-label="Input recipe name")
           div(class="warning md-button" ng-show="recipeName.name.$error.pattern")
@@ -102,9 +102,8 @@ md-tabs(class="md-primary" md-selected="selectedIndex" md-dynamic-height md-bord
               label(for="hopWtChng") Weight(oz)
               input(flex type="number" min="0" class="grainWtChngIn" name="hopWtChng" id="hopWtChng" ng-model='recipeHop.weight' ng-value="{{recipeHop.weight}}" aria-label="Change hops weight")
             ul(class="gridList" layout="row")
-              li(class="hopItem") AA%: {{recipeHop.Alpha_Acid}}
-              li(class="hopItem") Type: {{recipeHop.hopType}}
-              li(class="hopItem") Time: {{recipeHop.hopTime}}
+              li(class="hopItem") {{recipeHop.hopType}}
+              li(class="hopItem") {{recipeHop.hopTime}} {{recipeHop.hopTimeUnit}}
             md-button(class="md-raised md-warn" ng-click="deleteItem($index, 'hops')") Remove
       md-button(ng-show="user.username" class="ingredientBtn md-primary md-button" ng-click="saveRecipe()" aria-label="Save recipe") Save Recipe  
       md-button(class="md-warn md-button" ng-click="clearCurrentRecipe()" aria-label="Clear recipe") Clear Recipe

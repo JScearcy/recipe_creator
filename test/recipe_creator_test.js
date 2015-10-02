@@ -92,6 +92,34 @@ describe('recipe creation', function(){
       expect(scope.recipe.grains.added.length).to.equal(0);
       expect(scope.recipe.hops.added.length).to.equal(0);
     });
+    it('should take an srm value and return a RBG value for the SRM', function(){
+      var rgb = recipeFunc.srmToRgbArray(3)
+      expect(rgb).to.be.an('Array');
+      expect(rgb.length).to.equal(3);
+      expect(rgb[0]).to.equal(236);
+      expect(rgb[1]).to.equal(167);
+      expect(rgb[2]).to.equal(75);
+      rgb = recipeFunc.srmToRgbArray(0);
+      expect(rgb[0]).to.equal(251);
+      expect(rgb[1]).to.equal(192);
+      expect(rgb[2]).to.equal(0);
+      rgb = recipeFunc.srmToRgbArray({one: 1});
+      expect(rgb[0]).to.equal(251);
+      expect(rgb[1]).to.equal(192);
+      expect(rgb[2]).to.equal(0);
+      rgb = recipeFunc.srmToRgbArray('50');
+      expect(rgb[0]).to.equal(251);
+      expect(rgb[1]).to.equal(192);
+      expect(rgb[2]).to.equal(0);
+    });
+    it('should take an srm value from previous func and return a css rgb string, if the function incorrect return default', function(){
+      var rgb = recipeFunc.srmToRgbArray(3);
+      var rgbCSS = recipeFunc.RgbArrayToCSS(rgb);
+      expect(rgbCSS).to.be.a('string');
+      expect(rgbCSS).to.equal('rgb(236, 167, 75);');
+      rgbCSS = recipeFunc.RgbArrayToCSS('notCorrect');
+      expect(rgbCSS).to.equal('rgb(251, 192, 0);');
+    })
     it('should change the current recipe to the defined "saved" recipe', function(){
       scope.editRecipe({
         name: 'Test',

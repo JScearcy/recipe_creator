@@ -124,6 +124,7 @@ app.service('recipeFunc', function(){
     this.Type = hopObj.Type;
     this.hopTime = hopObj.hopTime;
     this.hopType = hopObj.hopType;
+    this.hopTimeUnit = hopObj.hopTimeUnit;
     this.weight = hopObj.weight;
   };
   //in unit test - constructor for a blank recipe
@@ -245,5 +246,24 @@ app.service('recipeFunc', function(){
           scope.recipes[index] = recipeFunc.calculateStats(recipe, recipeFunc);
       });
     })
+  };
+  this.srmToRgbArray = function(srm) {
+    if(srm < 1 || typeof srm !== 'number'){
+      return [251, 192, 0];
+    } else {
+        var rgb = [];
+        rgb.push(Math.round(Math.min(255, Math.max(0, 255 * Math.pow(0.975, srm)))));
+        rgb.push(Math.round(Math.min(255, Math.max(0, 245 * Math.pow(0.88, srm)))));
+        rgb.push(Math.round(Math.min(255, Math.max(0, 220 * Math.pow(0.7, srm)))));
+        return rgb
+      }
+  };
+  this.RgbArrayToCSS = function(rgbarray) {
+    if(typeof rgbarray !== 'object') {
+      var rgbCSS = 'rgb(251, 192, 0);';
+    } else {
+      var rgbCSS = 'rgb(' + rgbarray[0] + ', ' + rgbarray[1] + ', ' + rgbarray[2] + ');';
+    }
+    return rgbCSS;
   }
 });

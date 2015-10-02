@@ -25,6 +25,8 @@
             li(class="calcList") Volume: {{recipe.volume}} gal
             li(class="calcList") Attenuation: {{recipe.attenuation}}%
             li(class="calcList") Efficiency: {{recipe.efficiency}}%
+        div(layout="row" layout-align="center center")
+          p {{recipe.notes}}
         div(layout="row" layout-align="center")
           md-button(class="md-warn md-button" ng-click="deleteRecipe(recipe)") Delete Recipe
           md-button(class="md-primary md-button" ng-click="editRecipe(recipe)") Edit Recipe

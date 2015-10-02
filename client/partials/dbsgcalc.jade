@@ -17,9 +17,9 @@ div(class='dbfgCalculate')
         md-cols-sm="2" md-cols-md="4" md-cols-gt-md="6" md-cols-gt-lg="8"
         md-row-height="3:4"
         md-gutter="8px" md-gutter-gt-sm="4px")
-        md-grid-tile(class="md-primary" md-rowspan='1' md-colspan='1' md-colspan-sm="1" ng-show='ppgItems.length > 0' ng-repeat="ppgItem in ppgItems track by $index")
+        md-grid-tile(class="yellow" md-rowspan='1' md-colspan='1' md-colspan-sm="1" ng-show='ppgItems.length > 0' ng-repeat="ppgItem in ppgItems track by $index")
           div(class='dbfgCalculate')
-            md-grid-tile-header
-              h2 {{ppgItem.name}} 
+            md-grid-tile-header(layout="row" layout-align="center")
+              h2(class="blackText") {{ppgItem.name}} 
             p PPG: {{ppgItem.ppg}}
             p DBFG: {{ppgItem.dbfg}}

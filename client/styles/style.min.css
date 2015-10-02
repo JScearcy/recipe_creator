@@ -116,3 +116,12 @@ md-tabs.md-primary > md-tabs-wrapper > md-tabs-canvas > md-pagination-wrapper > 
   width: 90%;
   margin: 5px auto;
 }
+.nameForm {
+  margin-top: 8px;
+}
+.blackText {
+  color: black;
+}
+.yellow {
+  background: #ffff8d;
+}
