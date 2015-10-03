@@ -125,3 +125,17 @@ md-tabs.md-primary > md-tabs-wrapper > md-tabs-canvas > md-pagination-wrapper > 
 .yellow {
   background: #ffff8d;
 }
+.savedRecipe {
+    border: 2px solid #000;
+    margin: 10px auto;
+    width: 70%;
+    box-shadow: 0px 2px 10px 3px rgba(0,0,0,.26);
+    border-radius: 10px;
+    background-color: #CC9;
+}
+.biggerBold {
+  text-decoration: underline;
+  font-weight: bold;
+  font-size: 14px;
+  list-style-type: none;
+}

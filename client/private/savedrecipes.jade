@@ -2,32 +2,36 @@
   div(ng-controller="savedRecipes")
     md-button(ng-click="getSavedRecipes()" class="md-accent md-raised md-button") Get Saved Recipes
     md-tabs
-      md-tab(ng-repeat="recipe in recipes" label="{{recipe.name}}" layout="column")
-        div(layout="row" layout-align="center")
-          h2 {{recipe.name}}
-        div(layout="row" layout-align="center")
-          ul Grains
-            li(ng-repeat="grain in recipe.grains.added track by $index") {{grain.weight + ' lbs ' + grain.name}}
-          ul Hops
-            li(ng-repeat="hop in recipe.hops.added track by $index") {{hop.weight + ' oz ' + hop.Name + " Time: " + hop.hopTime}}
-          ul Yeast 
-            li {{recipe.yeast.ID + ' ' + recipe.yeast.Name}} 
-        div(layout="row" layout-align="center")
-          ul(class="mainCalcList" layout="row" layout-align="center")
-            li(class="calcList") OG: {{recipe.og}}
-            li(class="calcList") FG: {{recipe.fg}}
-            li(class="calcList") ABV: {{recipe.abv}}
-            li(class="calcList") IBUs: {{recipe.hops.ibu}}
-            li(class="calcList") Color(SRM Morey): {{recipe.srm}}
-            li(class="calcList") Diastatic Power: {{recipe.dp}}
-        div(layout="row" layout-align="center")
-          ul(class="mainCalcList" layout="row" layout-align="center")
-            li(class="calcList") Volume: {{recipe.volume}} gal
-            li(class="calcList") Attenuation: {{recipe.attenuation}}%
-            li(class="calcList") Efficiency: {{recipe.efficiency}}%
-        div(layout="row" layout-align="center center")
-          p {{recipe.notes}}
-        div(layout="row" layout-align="center")
-          md-button(class="md-warn md-button" ng-click="deleteRecipe(recipe)") Delete Recipe
-          md-button(class="md-primary md-button" ng-click="editRecipe(recipe)") Edit Recipe
+      md-tab(ng-repeat="recipe in recipes" label="{{recipe.name}}" layout layout-align="center")
+        .savedRecipe
+          div(layout="row" layout-align="center")
+            h2 {{recipe.name}}
+          div(layout="row" layout-sm="column" layout-align="center")
+            ul 
+              li(class="biggerBold") Grains
+              li(ng-repeat="grain in recipe.grains.added track by $index") {{grain.weight + ' lbs ' + grain.name}}
+            ul 
+              li(class="biggerBold") Hops
+              li(ng-repeat="hop in recipe.hops.added track by $index") {{hop.weight + ' oz ' + hop.Name + " Time: " + hop.hopTime + ' ' + hop.hopTimeUnit}}
+            ul 
+              li(class="biggerBold") Yeast 
+              li {{recipe.yeast.ID + ' ' + recipe.yeast.Name}} 
+          div(layout="row" layout-align="center")
+            ul(class="mainCalcList" layout="row" layout-sm="column" layout-align="center")
+              li(class="calcList") OG: {{recipe.og}}
+              li(class="calcList") FG: {{recipe.fg}}
+              li(class="calcList") ABV: {{recipe.abv}}
+              li(class="calcList") IBUs: {{recipe.hops.ibu}}
+              li(class="calcList") Color(SRM Morey): {{recipe.srm}}
+              li(class="calcList") Diastatic Power: {{recipe.dp}}
+          div(layout="row" layout-align="center")
+            ul(class="mainCalcList" layout="row" layout-align="center")
+              li(class="calcList") Volume: {{recipe.volume}} gal
+              li(class="calcList") Attenuation: {{recipe.attenuation}}%
+              li(class="calcList") Efficiency: {{recipe.efficiency}}%
+          div(layout="row" layout-align="center center")
+            p {{recipe.notes}}
+          div(layout="row" layout-align="center")
+            md-button(class="md-warn md-button" ng-click="deleteRecipe(recipe)") Delete Recipe
+            md-button(class="md-button" ng-click="editRecipe(recipe)") Edit Recipe
     

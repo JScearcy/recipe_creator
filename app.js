@@ -18,8 +18,11 @@ var login = require('./routes/login');
 var recipes = require('./routes/auth/recipes');
 var catchall = require('./routes/catchall');
 var unwanted = require('./routes/unwanted');
+var httpredirect = require('./routes/httpredirect');
 
 var app = express();
+
+
 
 mongoose.connect('mongodb://127.0.0.1:27017/userdata')
 mongoose.connection.on('connected', function () {
@@ -49,7 +52,7 @@ app.use(expressValidator({
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use('/', httpredirect);
 app.use('/private/*', expressJwt({secret: process.env.SECRET}));
 app.use('/private/recipes', recipes)
 app.use('/private', express.static(path.join(__dirname, 'private')));
