@@ -2,3 +2,6 @@ node_modules
 .DS_Store
 .idea
 npm-debug.log
+sub.class1.server.ca.pem
+ssl.key
+ssl.crt

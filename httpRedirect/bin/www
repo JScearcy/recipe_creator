@@ -5,34 +5,21 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('Prime_Personal_Project:server');
-var https = require('https');
-var fs = require('fs');
-var path = require('path');
+var debug = require('debug')('httpRedirect:server');
+var http = require('http');
 
-var ca = fs.readFileSync(path.join(__dirname, '../certs/sub.class1.server.ca.pem'));
-var privateKey = fs.readFileSync(path.join(__dirname, '../certs/ssl.key'));
-var sslCert = fs.readFileSync(path.join(__dirname, '../certs/ssl.crt'));
-
-var options = {
-  ca: ca,
-  key: privateKey,
-  cert: sslCert
-};
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '8000');
 app.set('port', port);
 
-
 /**
- * Create HTTPS server.
+ * Create HTTP server.
  */
 
-
-var server = https.createServer(options, app);
+var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
